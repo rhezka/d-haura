@@ -1,0 +1,378 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>D'Haura — Pratinjau Lengkap</title></head><body><div class="appnav"><button id="navK" onclick="switchView('K')">Katalog</button><button id="navA" class="off" onclick="switchView('A')">Admin</button></div><div id="viewK">
+<header class="top">
+  <div class="brand">d’haura</div>
+  <div class="tag">Kue & nutrisi harian</div>
+  <div class="actions">
+    <a class="btn" id="waOrder" href="https://wa.me/6280000000000?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
+    <a class="btn ghost" href="#" onclick="switchView('A');return false">Admin</a>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2>Kue</h2>
+    <div class="grid" id="kueGrid"></div>
+  </section>
+
+  <section>
+    <h2>Herbalife</h2>
+    <div class="grid" id="herbaGrid"></div>
+  </section>
+
+  <section class="info">
+    <h2>Info toko</h2>
+    <ul>
+      <li>Alamat dan jam buka: menyusul.</li>
+      <li>Pembayaran: tunai dan QRIS D'Haura.</li>
+      <li>Pesanan acara: hubungi minimal 3 hari sebelumnya.</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  d-haura.my.id
+</footer>
+
+<script src="app.js"></script>
+
+</div><div id="viewA" style="display:none">
+<div class="wrap">
+  <p><a href="#" onclick="switchView('K');return false">← Kembali ke katalog</a></p>
+  <h2>Halaman admin</h2>
+
+  <div id="lock">
+    <p class="small">Masuk dulu untuk membuka catatan dan dashboard.</p>
+    <input id="fUser" placeholder="Nama pengguna" autocomplete="username">
+    <input id="fPass" type="password" placeholder="Kata sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    <div class="small" id="loginErr" style="color:#a00"></div>
+    <button onclick="login()">Masuk</button>
+    <p class="small">Contoh sementara — pengguna nur, sandi 1234.</p>
+  </div>
+
+  <div id="main" style="display:none">
+    <p class="small"><a href="#" onclick="logout();return false">Keluar</a></p>
+    <div class="dash">
+      <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Pelanggan tercatat</div></div>
+      <div class="stat"><div class="n" id="sWeek">0</div><div class="l">Datang 7 hari terakhir</div></div>
+      <div class="stat"><div class="n" id="sQuiet">0</div><div class="l">Belum datang &gt; 14 hari</div></div>
+      <div class="stat"><div class="n" id="sVisits">0</div><div class="l">Kunjungan 30 hari</div></div>
+    </div>
+
+    <h3>Grafik kunjungan 14 hari</h3>
+    <div id="chartVisits"></div>
+
+    <h3>Pelanggan per jenis</h3>
+    <div id="chartKat"></div>
+
+    <h3>Perlu disapa</h3>
+    <div id="nudge" class="small">Memuat…</div>
+
+    <h3>Tambah pelanggan</h3>
+    <div class="row">
+      <input id="fNama" placeholder="Nama pelanggan" autocomplete="off">
+      <input id="fWa" placeholder="No WA (opsional)" inputmode="tel" autocomplete="off">
+    </div>
+    <div class="row">
+      <select id="fKat">
+        <option value="Herbalife">Herbalife</option>
+        <option value="Kue">Kue</option>
+        <option value="Campur">Campur</option>
+      </select>
+      <button onclick="addCust()">Simpan</button>
+    </div>
+
+    <h3>Cari pelanggan</h3>
+    <input id="q" placeholder="Ketik nama…" oninput="render()" autocomplete="off">
+
+    <div id="list"></div>
+
+    <h3>Cadangan</h3>
+    <div class="row">
+      <button class="secondary" onclick="exportJson()">Unduh cadangan</button>
+      <button class="secondary" onclick="document.getElementById('imp').click()">Pulihkan</button>
+      <input id="imp" type="file" accept="application/json" style="display:none" onchange="importJson(this)">
+    </div>
+    <p class="small">Kalau ganti HP, unduh cadangan di HP lama lalu pulihkan di HP baru.</p>
+  </div>
+</div>
+
+</div><style>:root { --bg:#fff8f0; --ink:#3d2b1f; --card:#ffffff; --line:#ecdcc8; --acc:#b3541e; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); }
+.top { padding:28px 18px 18px; text-align:center; }
+.brand { font-size:42px; font-weight:800; letter-spacing:.5px; }
+.tag { opacity:.75; margin:4px 0 14px; }
+.actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.btn { background:var(--acc); color:#fff; padding:12px 18px; border-radius:999px; text-decoration:none; font-weight:700; display:inline-block; }
+.btn.ghost { background:transparent; color:var(--acc); border:2px solid var(--acc); }
+main { max-width:900px; margin:0 auto; padding:0 14px 40px; }
+.notice { background:#fff3cd; border:1px solid #e6cf8a; padding:10px 14px; border-radius:12px; margin:10px 0 18px; font-size:14px; }
+h2 { margin:26px 0 4px; }
+.sub { margin:0 0 12px; opacity:.75; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.card img { width:100%; height:150px; object-fit:cover; display:block; background:#f3e7d7; }
+.imgwrap { position:relative; }
+.stamp { position:absolute; top:8px; left:8px; width:52px; height:auto;
+  background:#fff; border-radius:10px; padding:3px;
+  box-shadow:0 1px 4px rgba(0,0,0,.3); }
+.card .pad { padding:10px 12px 14px; }
+.card .name { font-weight:800; }
+.card .price { color:var(--acc); font-weight:800; margin-top:4px; }
+.card .desc { font-size:13px; opacity:.75; margin-top:4px; }
+.badge { display:inline-block; font-size:12px; font-weight:800; background:#1e7e34; color:#fff; border-radius:999px; padding:2px 10px; margin-top:6px; }
+.badge.pending { background:#8a6d00; }
+.card .order { margin-top:10px; display:block; text-align:center; font-size:14px; padding:9px 10px; }
+.info ul { line-height:1.8; }
+footer { text-align:center; padding:26px; opacity:.6; font-size:13px; }
+/* admin */
+.wrap { max-width:900px; margin:0 auto; padding:14px 14px 60px; }
+input,select,textarea { width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--line); font-size:15px; margin:6px 0; background:#fff; }
+button { background:var(--acc); color:#fff; border:0; border-radius:10px; padding:11px 14px; font-weight:800; font-size:15px; }
+button.secondary { background:#6c757d; }
+.row { display:flex; gap:8px; flex-wrap:wrap; }
+.row > * { flex:1; min-width:140px; }
+.dash { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin:12px 0; }
+.stat { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; }
+.stat .n { font-size:26px; font-weight:800; }
+.stat .l { font-size:13px; opacity:.7; }
+.cust { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; margin:10px 0; }
+.cust .nm { font-weight:800; font-size:17px; }
+.hist { font-size:13px; opacity:.85; margin-top:6px; line-height:1.7; }
+.small { font-size:13px; opacity:.7; }
+.bar { height:10px; background:#f0e2cf; border-radius:999px; overflow:hidden; margin-top:6px; }
+.bar > div { height:100%; background:var(--acc); }
+.chart { width:100%; height:auto; background:#fff; border:1px solid var(--line); border-radius:12px; }
+.chart rect { fill:var(--acc); }
+.chart .cl { font-size:11px; fill:#8a7a68; text-anchor:middle; }
+.chart .cv { font-size:12px; font-weight:800; fill:#3d2b1f; text-anchor:middle; }
+.krow { margin:8px 0; }
+.krow .kl { font-size:14px; font-weight:700; }
+.vform { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.vform input[type="date"] { flex:1; min-width:130px; }
+.vform input:not([type]) { flex:2; min-width:130px; }
+.vform button { flex:1; min-width:90px; }
+.appnav { position:sticky; top:0; z-index:10; display:flex; gap:8px; padding:10px 14px;
+  background:var(--bg); border-bottom:1px solid var(--line); }
+.appnav button { flex:1; }
+.appnav button.off { background:#6c757d; }
+</style><script>// Data final (struktur). Foto, nama, dan harga menyusul data asli.
+const WA_NUMBER = "6280000000000"; // GANTI nomor WA
+
+const KUE = [
+  { nama:"Bolu Pandan", harga:25000, halal:true, img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=600&q=80" },
+  { nama:"Brownies Kukus", harga:30000, halal:false, img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" },
+  { nama:"Lapis Pelangi", harga:20000, halal:false, img:"https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80" },
+  { nama:"Putu Ayu", harga:15000, halal:false, img:"https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&q=80" },
+  { nama:"Kue Kering", harga:35000, halal:false, img:"https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600&q=80" },
+];
+
+const HERBA = [
+  { nama:"Shake Nutrisi", harga:0, img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" },
+  { nama:"Teh Herbal", harga:0, img:"https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80" },
+  { nama:"Aloe Pendamping", harga:0, img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80" },
+];
+
+function rupiah(n){ if(!n) return "Tanya via WA"; return "Rp " + n.toLocaleString("id-ID"); }
+function waLink(nama){
+  const t = encodeURIComponent("Halo D'Haura, saya mau tanya " + nama);
+  return "https://wa.me/" + WA_NUMBER + "?text=" + t;
+}
+function card(p){
+  const stamp = p.halal ? '<img class="stamp" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyNi4wLjIsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4KCjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgdmVyc2lvbj0iMS4xIgogICBpZD0iTGF5ZXJfMSIKICAgeD0iMHB4IgogICB5PSIwcHgiCiAgIHZpZXdCb3g9IjAgMCA2NTYuNzUwNDkgMTE3NC44MjY5IgogICB4bWw6c3BhY2U9InByZXNlcnZlIgogICBzb2RpcG9kaTpkb2NuYW1lPSJoYWxhbC1pbmRvbmVzaWEta2VtZW5hZ19faWNvbmxvZ292ZWN0b3IuY29tLTAxNS5zdmciCiAgIHdpZHRoPSI2NTYuNzUwNDkiCiAgIGhlaWdodD0iMTE3NC44MjY5IgogICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjkyLjIgKDVjM2U4MGQsIDIwMTctMDgtMDYpIj48bWV0YWRhdGEKICAgICBpZD0ibWV0YWRhdGE1MyI+PHJkZjpSREY+PGNjOldvcmsKICAgICAgICAgcmRmOmFib3V0PSIiPjxkYzpmb3JtYXQ+aW1hZ2Uvc3ZnK3htbDwvZGM6Zm9ybWF0PjxkYzp0eXBlCiAgICAgICAgICAgcmRmOnJlc291cmNlPSJodHRwOi8vcHVybC5vcmcvZGMvZGNtaXR5cGUvU3RpbGxJbWFnZSIgLz48ZGM6dGl0bGU+PC9kYzp0aXRsZT48L2NjOldvcms+PC9yZGY6UkRGPjwvbWV0YWRhdGE+PGRlZnMKICAgICBpZD0iZGVmczUxIiAvPjxzb2RpcG9kaTpuYW1lZHZpZXcKICAgICBwYWdlY29sb3I9IiNmZmZmZmYiCiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiCiAgICAgYm9yZGVyb3BhY2l0eT0iMSIKICAgICBvYmplY3R0b2xlcmFuY2U9IjEwIgogICAgIGdyaWR0b2xlcmFuY2U9IjEwIgogICAgIGd1aWRldG9sZXJhbmNlPSIxMCIKICAgICBpbmtzY2FwZTpwYWdlb3BhY2l0eT0iMCIKICAgICBpbmtzY2FwZTpwYWdlc2hhZG93PSIyIgogICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iMTYwMCIKICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSI4MzciCiAgICAgaWQ9Im5hbWVkdmlldzQ5IgogICAgIHNob3dncmlkPSJmYWxzZSIKICAgICBmaXQtbWFyZ2luLXRvcD0iMCIKICAgICBmaXQtbWFyZ2luLWxlZnQ9IjAiCiAgICAgZml0LW1hcmdpbi1yaWdodD0iMCIKICAgICBmaXQtbWFyZ2luLWJvdHRvbT0iMCIKICAgICBpbmtzY2FwZTp6b29tPSIwLjE4NDM3NSIKICAgICBpbmtzY2FwZTpjeD0iMzEwLjEwMTE4IgogICAgIGlua3NjYXBlOmN5PSI1ODQiCiAgICAgaW5rc2NhcGU6d2luZG93LXg9Ii04IgogICAgIGlua3NjYXBlOndpbmRvdy15PSItOCIKICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIxIgogICAgIGlua3NjYXBlOmN1cnJlbnQtbGF5ZXI9IkxheWVyXzEiIC8+PHN0eWxlCiAgICAgdHlwZT0idGV4dC9jc3MiCiAgICAgaWQ9InN0eWxlMiI+Cgkuc3Qwe2ZpbGw6IzY1MjY3Mjt9Cjwvc3R5bGU+PHBhdGgKICAgICBjbGFzcz0ic3QwIgogICAgIGQ9Im0gMzg0LjAwMTE4LDYwLjkyNjk0NSAtMjUuNSwzMi43IC0wLjQsNzM0LjQ5OTk5NSBjIDAsMi4zIC0xLjksNC4zIC00LjMsNC4zIGwgLTIxNS41LDAuNyBjIDAsMCAtNy40LC01IC03LjQsLTE1LjMgMCwtMTAuMyAtMC43LC0xOS41IC0wLjcsLTE5LjYgMCwwIDAsMCAwLDAgbCAtNDQuMTAwMDA0LC0xLjEgYyAwLDAgMCwwIDAsMCAwLDAgLTEwLjMsNjguOSA0MS40MDAwMDQsNzUuOSAwLDAgMCwwIDAuMSwwIGggNDEwIGMgMC41LDAgMS4zLC0wLjIgMS44LC0wLjMgNi43LC0xIDE0LjEsLTQgMjIuNCwtMTMgMTEuMiwtMTIuMSAxMi4zLC0yMi4yIDEyLjgsLTMxLjkgLTAuMiwtMjkuOCAtMi40LC02MC4xIC0xLjUsLTkxLjYgMC4xLC0zLjQgMi4yLC03LjkgNC43LC0xMC4xIGwgMS40LC0xLjIgYyAwLjEsLTAuMSAwLjIsLTAuMiAwLjMsLTAuMiAzLjMsLTIuNCA1My41LC0zOS40IDcyLjIsLTEyMC42IDIwLjcsLTg5LjcgLTI3LjYsLTE3Mi40IC00OC4zLC0yMDYuOSAtODcuNiwtMTQ2LjEgLTE1MS43LC0yNDQuOCAtMTUxLjcsLTI0NC44IHYgNTg5LjcgaCA0NC44IHYgLTQzOCBjIDAsMCAzNy45LDUxLjcgOTMuMSwxNTguNiAzLjIsNi4xIDM3LjksNzIuNCAxMy44LDE0OC4zIC0xMS45LDM3LjUgLTU1LjIsODIuOCAtNTUuMiw4Mi44IDAsMCAtMTMuOCwxMC4zIC0xMy44LDMxIHYgODkuNiBjIDAsMCAwLDAgMCwwIDAsMC4yIDMuNCwxNy4yIC0xMy44LDE3LjIgaCAtMTE3LjIgViA5Mi41MjY5NDUgWiIKICAgICBpZD0icGF0aDQiCiAgICAgaW5rc2NhcGU6Y29ubmVjdG9yLWN1cnZhdHVyZT0iMCIKICAgICBzdHlsZT0iZmlsbDojNjUyNjcyIiAvPjxwYXRoCiAgICAgY2xhc3M9InN0MCIKICAgICBkPSJNIDE3LjcwMTE3NiwxMTczLjIyNjkgSCAzLjkwMTE3NjQgdiAtNDguMyBIIDE3LjcwMTE3NiBaIG0gLTYuOSwtNi45IHYgLTM0LjUgeiIKICAgICBpZD0icGF0aDYiCiAgICAgaW5rc2NhcGU6Y29ubmVjdG9yLWN1cnZhdHVyZT0iMCIKICAgICBzdHlsZT0iZmlsbDojNjUyNjcyIiAvPjxwYXRoCiAgICAgY2xhc3M9InN0MCIKICAgICBkPSJNIDEwNC4zMDExOCwxMTczLjIyNjkgSCA5MS4wMDExNzYgbCAtMTUuNywtMjMuMyBjIC0wLjcsLTEgLTEuNCwtMi4xIC0yLjEsLTMgMCwxLjQgMCwyLjkgMCw0LjQgdiAyMS45IGggLTEzLjggdiAtNDguMyBoIDEzIGwgMTUuOCwyMS42IGMgMC42LDAuOSAxLjMsMS44IDEuOSwyLjcgMC4xLC0xLjUgMC4yLC0yLjkgMC40LC00LjUgdiAtMTkuOCBoIDEzLjgwMDAwNCB6IgogICAgIGlkPSJwYXRoOCIKICAgICBpbmtzY2FwZTpjb25uZWN0b3ItY3VydmF0dXJlPSIwIgogICAgIHN0eWxlPSJmaWxsOiM2NTI2NzIiIC8+PHBhdGgKICAgICBjbGFzcz0ic3QwIgogICAgIGQ9Im0gMTU5LjgwMTE4LDExNzQuMTI2OSBjIC00LjEsMCAtNy45LC0wLjIgLTExLjIsLTAuNSBsIC0zLjEsLTAuMyB2IC00NyBsIDMsLTAuNCBjIDQuNCwtMC42IDguOCwtMC45IDEzLjIsLTAuOSA5LjMsMCAxNi4xLDIgMjAuOSw2IDUuMSw0LjIgNy44LDEwLjEgNy44LDE3LjYgMCw3LjcgLTIuNywxNC4yIC03LjgsMTguNyAtNS4xLDQuNCAtMTIuOSw2LjggLTIyLjgsNi44IHogbSAtMC41LC0xMS4zIGMgMS4xLDAgMi4xLDAgMi42LDAgMTAuOCwwIDE2LjIsLTQuOCAxNi4yLC0xNC4yIDAsLTMuNyAtMSwtNi43IC0zLC04LjcgLTIuNSwtMi41IC02LjcsLTMuOSAtMTIuMiwtMy45IC0xLjQsMCAtMi42LDAuMSAtMy41LDAuMSB2IDI2LjcgeiIKICAgICBpZD0icGF0aDEwIgogICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgc3R5bGU9ImZpbGw6IzY1MjY3MiIgLz48cGF0aAogICAgIGNsYXNzPSJzdDAiCiAgICAgZD0ibSAyNTIuNTAxMTgsMTE3NC44MjY5IGMgLTE0LjMsMCAtMjQuMiwtMTAuMSAtMjQuMiwtMjQuNSAwLC0xNC45IDEwLjIsLTI1LjMgMjQuOSwtMjUuMyAxNC4zLDAgMjQuMiwxMC4xIDI0LjIsMjQuNSAwLDE1LjEgLTEwLDI1LjMgLTI0LjksMjUuMyB6IG0gMC40LC0zOC42IGMgLTguNCwwIC0xMS40LDcuNSAtMTEuNCwxMy45IDAsNi40IDMuNSwxMy40IDExLjMsMTMuNCA3LjksMCAxMS40LC02LjkgMTEuNCwtMTMuOCAwLC02LjUgLTMuNiwtMTMuNSAtMTEuMywtMTMuNSB6IgogICAgIGlkPSJwYXRoMTIiCiAgICAgaW5rc2NhcGU6Y29ubmVjdG9yLWN1cnZhdHVyZT0iMCIKICAgICBzdHlsZT0iZmlsbDojNjUyNjcyIiAvPjxwYXRoCiAgICAgY2xhc3M9InN0MCIKICAgICBkPSJtIDM2MC42MDExOCwxMTczLjIyNjkgaCAtMTEuMiBsIC0xNS43LC0yMy4zIGMgLTAuNCwtMC42IC0wLjgsLTEuMiAtMS4yLC0xLjggMC4xLDAuOCAwLjMsMS42IDAuNSwyLjUgbCAwLjEsMC43IHYgMjEuOSBoIC0xMy44IHYgLTQ4LjMgaCAxMS42IGwgMTUuOCwyMS42IGMgMC4yLDAuMyAwLjQsMC41IDAuNSwwLjggLTAuMSwtMC41IC0wLjIsLTEuMSAtMC4zLC0xLjYgbCAtMC4xLC0wLjcgdiAtMjAgaCAxMy44IHoiCiAgICAgaWQ9InBhdGgxNCIKICAgICBpbmtzY2FwZTpjb25uZWN0b3ItY3VydmF0dXJlPSIwIgogICAgIHN0eWxlPSJmaWxsOiM2NTI2NzIiIC8+PHBvbHlnb24KICAgICBjbGFzcz0ic3QwIgogICAgIHBvaW50cz0iNzM2LDExNzQuMiA3NjcsMTE3NC4yIDc2NywxMTg0LjUgNzQ2LjMsMTE4NC41IDc0Ni4zLDExOTEuNCA3NjcsMTE5MS40IDc2NywxMjAxLjggNzQ2LjMsMTIwMS44IDc0Ni4zLDEyMDkuNCA3NjcsMTIwOS40IDc2NywxMjIyLjQgNzM2LDEyMjIuNCAiCiAgICAgaWQ9InBvbHlnb24xNiIKICAgICBzdHlsZT0iZmlsbDojNjUyNjcyIgogICAgIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0zMjkuODk4ODIsLTQ5LjE3MzA1NSkiIC8+PHBhdGgKICAgICBjbGFzcz0ic3QwIgogICAgIGQ9Im0gNDk0LjkwMTE4LDExNzQuNzI2OSBjIC01LDAgLTEwLjQsLTEuMyAtMTMuNiwtMy4xIGwgLTIuNCwtMS40IDMuNywtMTEuMSAzLjYsMiBjIDIuNiwxLjQgNiwyLjMgOSwyLjMgMS41LDAgNi4yLC0wLjMgNi4yLC0zLjYgMCwtMS4yIDAsLTIuOCAtNi40LC01IC0zLjUsLTEuMSAtMTQuNSwtNC42IC0xNC41LC0xNSAwLC04LjUgNy43LC0xNC43IDE4LjQsLTE0LjcgNi4xLDAgMTAsMS41IDExLjgsMi40IGwgMi43LDEuNCAtNC4xLDEwLjggLTMuNCwtMS43IGMgLTEuMiwtMC42IC0zLjgsLTEuNiAtNy4zLC0xLjYgLTMuNiwwIC01LjMsMS40IC01LjMsMi44IDAsMS4xIDAsMi40IDYuOSw0LjggNi42LDIuMyAxNC4xLDYuMSAxNC4xLDE1LjUgMC4yLDcuNSAtNS45LDE1LjIgLTE5LjQsMTUuMiB6IgogICAgIGlkPSJwYXRoMTgiCiAgICAgaW5rc2NhcGU6Y29ubmVjdG9yLWN1cnZhdHVyZT0iMCIKICAgICBzdHlsZT0iZmlsbDojNjUyNjcyIiAvPjxwYXRoCiAgICAgY2xhc3M9InN0MCIKICAgICBkPSJtIDU2Ny41MDExOCwxMTczLjIyNjkgaCAtMTMuOCB2IC00OC4zIGggMTMuOCB6IG0gLTYuOSwtNi45IHYgLTM0LjUgeiIKICAgICBpZD0icGF0aDIwIgogICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgc3R5bGU9ImZpbGw6IzY1MjY3MiIgLz48cGF0aAogICAgIGNsYXNzPSJzdDAiCiAgICAgZD0ibSA2NTAuNTAxMTgsMTE3My4yMjY5IGggLTEzIGwgLTUuMiwtMTMuOCBoIC0xMi41IGwgLTUuMSwxMy44IGggLTEyLjggbCAxOC4zLC00OC4zIGggMTEuOSB6IG0gLTI3LjYsLTIxLjkgaCA2LjQgbCAtMy4yLC04LjUgeiIKICAgICBpZD0icGF0aDIyIgogICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgc3R5bGU9ImZpbGw6IzY1MjY3MiIgLz48cGF0aAogICAgIGQ9Im0gMjU3LjcwMTE4LDEwNzcuMjI2OSBoIDUuMyB2IDAgeiIKICAgICBpZD0icGF0aDI0IgogICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiIC8+PHBhdGgKICAgICBkPSJtIDI1Ny40MDExOCwxMDc1LjQyNjkgaCA1LjMgdiAwIHoiCiAgICAgaWQ9InBhdGgyNiIKICAgICBpbmtzY2FwZTpjb25uZWN0b3ItY3VydmF0dXJlPSIwIiAvPjxnCiAgICAgaWQ9ImczMCIKICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMzI5Ljg5ODgyLC00OS4xNzMwNTUpIj48cGF0aAogICAgICAgY2xhc3M9InN0MCIKICAgICAgIGQ9Im0gOTc2LjMsMTEyOC40IHYgMi42IGMgLTIuNiwwIC0zLjgsLTAuOSAtNSwtMi4xIGggLTgxLjkgdiAwIGggLTguNiBjIDAsLTcgNS4yLC00LjMgOC42LC0xNi41IFYgMTAxMyBjIC0zLjQsLTEyLjIgLTguNywtOS41IC04LjYsLTE2LjUgSCA5MjkgYyAwLDcuNyAtNi4zLDMuNyAtOS42LDIwLjYgdiA4My40IGwgNDkuNCwtMC41IGMgMTAuMSwtMS44IDkuNSwtMTEuMyAxNS4xLC0xMC4yIHoiCiAgICAgICBpZD0icGF0aDI4IgogICAgICAgaW5rc2NhcGU6Y29ubmVjdG9yLWN1cnZhdHVyZT0iMCIKICAgICAgIHN0eWxlPSJmaWxsOiM2NTI2NzIiIC8+PC9nPjxnCiAgICAgaWQ9ImczNCIKICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMzI5Ljg5ODgyLC00OS4xNzMwNTUpIj48cGF0aAogICAgICAgY2xhc3M9InN0MCIKICAgICAgIGQ9Im0gNzEzLjgsMTEyOC40IHYgMi42IGMgLTIuNiwwIC0zLjgsLTAuOSAtNSwtMi4xIGggLTgxLjkgdiAwIGggLTguNiBjIDAsLTcgNS4yLC00LjMgOC42LC0xNi41IFYgMTAxMyBjIC0zLjQsLTEyLjIgLTguNywtOS41IC04LjYsLTE2LjUgaCA0OC4zIGMgMCw3LjcgLTYuMywzLjcgLTkuNiwyMC42IHYgODMuNCBsIDQ5LjQsLTAuNSBjIDEwLjEsLTEuOCA5LjUsLTExLjMgMTUuMSwtMTAuMiB6IgogICAgICAgaWQ9InBhdGgzMiIKICAgICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgICBzdHlsZT0iZmlsbDojNjUyNjcyIiAvPjwvZz48ZwogICAgIGlkPSJnMzgiCiAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTMyOS44OTg4MiwtNDkuMTczMDU1KSI+PHBhdGgKICAgICAgIGNsYXNzPSJzdDAiCiAgICAgICBkPSJtIDQ1Ni44LDExMjcgaCAtNDguMyBjIDAsLTcuMyA1LjksLTMuOSA5LjIsLTE4LjkgdiAtMzUgbCAtNDguNCw1IC0wLjIsMzAuOCBjIDMuMywxNC4xIDkuMSwxMC45IDkuMSwxOC4xIGggLTQ4LjMgYyAwLC03LjUgNi4yLC0zLjcgOS40LC0xOS45IHYgLTkwLjkgYyAtMy4yLC0xNi4yIC05LjUsLTEyLjUgLTkuNCwtMTkuOSBoIDQ4LjMgYyAwLDcuMSAtNS43LDQgLTksMTcuOSBsIDAuMSwzOCA0OC44LC01LjIgLTAuMywtMzEuOCBjIC0zLjMsLTE1LjEgLTkuMywtMTEuNiAtOS4yLC0xOC45IGggNDguMyBjIDAsNy40IC02LjIsMy43IC05LjQsMTkuNyB2IDkxLjIgYyAzLjIsMTYuMSA5LjQsMTIuNCA5LjMsMTkuOCB6IgogICAgICAgaWQ9InBhdGgzNiIKICAgICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgICBzdHlsZT0iZmlsbDojNjUyNjcyIiAvPjwvZz48cGF0aAogICAgIGNsYXNzPSJzdDAiCiAgICAgZD0ibSA1MzYuNTAxMTgsMTA3My45MjY5IC01My4zLC0xMjYuNzk5OTYgLTE4LjIsMC4xIGMgMCwwIDAsLTAuMSAwLC0wLjEgaCAtMTAuNSBjIC0xMy4zLDAgMC4xLDMuNSAtMC4zLDEwLjYgbCAtNDMuNCwxMTMuODk5OTYgYyAtNS43LDcuMiAtOC4yLDIuOCAtOC4yLDguMyBoIDQuOCB2IDAgaCAzMC4zIHYgMCBoIDYuMSBjIDAsLTMuNCAtMy45LC0yLjEgLTIuMiwtOC45IGwgNywtMTYuNSA0Ni41LC0yLjcgNi41LDE5LjggYyAyLDcuNCAtMi42LDMuMiAtMi44LDguNCBoIDYuMyAyNi4yIDUuMyA1IGMgMC41LC0zLjEgLTIuOCwtNCAtNS4xLC02LjEgeiBtIC03OC43LC00Mi44IDEzLjUsLTMyLjM5OTk2IDEzLjYsMzAuMTk5OTYgeiIKICAgICBpZD0icGF0aDQwIgogICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgc3R5bGU9ImZpbGw6IzY1MjY3MiIgLz48cGF0aAogICAgIGNsYXNzPSJzdDAiCiAgICAgZD0ibSAyNzIuMzAxMTgsMTA3My45MjY5IC01My4zLC0xMjYuNzk5OTYgLTE4LjIsMC4xIGMgMCwwIDAsLTAuMSAwLC0wLjEgaCAtMTAuNSBjIC0xMy4zLDAgMC4xLDMuNSAtMC4zLDEwLjYgbCAtNDMuNCwxMTMuODk5OTYgYyAtNS43LDcuMiAtOC4yLDIuOCAtOC4yLDguMyBoIDQuOCB2IDAgaCAzMC4zIHYgMCBoIDYuMSBjIDAsLTMuNCAtMy45LC0yLjEgLTIuMiwtOC45IGwgNywtMTYuNSA0Ni41LC0yLjcgNi41LDE5LjggYyAyLDcuNCAtMi42LDMuMiAtMi44LDguNCBoIDYuMyAyNi4yIDUuMyA1IGMgMC40LC0zLjEgLTIuOCwtNCAtNS4xLC02LjEgeiBtIC03OC43LC00Mi44IDEzLjUsLTMyLjM5OTk2IDEzLjYsMzAuMTk5OTYgeiIKICAgICBpZD0icGF0aDQyIgogICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgc3R5bGU9ImZpbGw6IzY1MjY3MiIgLz48cG9seWdvbgogICAgIGNsYXNzPSJzdDAiCiAgICAgcG9pbnRzPSI1ODUsNzkzLjggNjMwLjcsNzkzLjggNjMwLjcsMjM3LjMgNTg1LDMwNC4zICIKICAgICBpZD0icG9seWdvbjQ0IgogICAgIHN0eWxlPSJmaWxsOiM2NTI2NzIiCiAgICAgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTMyOS44OTg4MiwtNDkuMTczMDU1KSIgLz48cGF0aAogICAgIGNsYXNzPSJzdDAiCiAgICAgZD0ibSAzNTMuNzAxMTgsMTguMjI2OTQ1IGMgLTQ4LjIsNzIuMSAtOTYuNSwxNDQuMTk5OTk1IC0xNDQuNywyMTYuMjk5OTk1IDAsMTY5LjYgMCwzMzkuMyAwLDUwOC45IC0zMy42LDAuNyAtNjcuMSwxLjMgLTEwMC43LDIgLTUuNSwtMi4zIC0xMi44MDAwMDQsLTUuOCAtMjAuODAwMDA0LC0xMC44IC0yLjUsLTEuNiAtMTQuNiwtOS4zIC0yOC4xLC0yMi44IC0xMi44LC0xMi45IC0yMC40LC0yNC42IC0yMi41LC0yOCAtNi4zLC0xMCAtOS41LC0xNy42IC0xNC45LC0zMC41IC04LjcsLTIwLjggLTExLjYsLTM0LjIgLTEyLjU5OTk5OTYsLTM5IC0yLjYsLTEzIC0zLjEsLTIyLjYgLTMuNywtMzQuNyAtMSwtMjEuMiAwLjIsLTM2LjkgMC40LC00MC40IDAuMywtMy40IDEuNywtMjAgNS44OTk5OTk2LC0zOS40IDcuNSwtMzQuMSAxOS45LC02MCAzMC41LC04MS45IDE1LjIsLTMxLjIgMjkuNCwtNTMuMyA0NS41LC03OC4xIDE1LjEwMDAwNCwtMjMuMyAyOC43MDAwMDQsLTQyLjEgMzguNDAwMDA0LC01NS4yIDAsMjYgMC4xLDUyLjEgMC4xLDc4LjEgLTguMywxMS4zIC0xOC4xLDI1LjcgLTI3LjgwMDAwNCw0My4zIC0zLjgsNi44IC0xMy45LDI1LjQgLTI0LjcsNTIuOCAtMTQuNywzNy41IC0yMyw1OC44IC0yNS4xLDg5LjQgLTAuOSwxMy40IC0yLjUsNDEuNiA5LjQsNzQuNSA3LjIsMTkuOCAxNi4zLDMzLjMgMTkuNCwzNy42IDE0LjEsMTkuOSAzMC4yMDAwMDQsMzIuMyA0MC44MDAwMDQsMzkuMyAxNS44LDAgMzEuNywwIDQ3LjUsMCAtMC4zLC0xNTguOCAtMC42LC0zMTcuNSAtMC45LC00NzYuMyA3OS4yLC0xMjEuMiAxMzcuNywtMjA5LjU5OTk5NSAxNDMuNywtMjE2LjQ5OTk5NTEgNC40LC01LjIgOS41LC02LjIgOS41LC02LjIgMy40LC0xLjMgNi44LC0wLjMgOS43LDAuNSAzLjgsMS4xIDYuNCwzIDExLjYsNi41IDMuMywyLjMgOC42LDUuOTAwMDAwMSAxNC4xLDEwLjYwMDAwMDEgeiIKICAgICBpZD0icGF0aDQ2IgogICAgIGlua3NjYXBlOmNvbm5lY3Rvci1jdXJ2YXR1cmU9IjAiCiAgICAgc3R5bGU9ImZpbGw6IzY1MjY3MiIgLz48L3N2Zz4=" alt="Halal Indonesia">' : '';
+  return '<div class="card">' +
+    '<div class="imgwrap"><img loading="lazy" src="' + p.img + '" alt="' + p.nama + '" onerror="this.style.display=\'none\'">' + stamp + '</div>' +
+    '<div class="pad"><div class="name">' + p.nama + '</div>' +
+    '<div class="price">' + rupiah(p.harga) + '</div>' +
+    '<a class="btn order" target="_blank" rel="noopener" href="' + waLink(p.nama) + '">Tanya / Pesan</a>' +
+    '</div></div>';
+}
+function renderPublic(){
+  const kg = document.getElementById("kueGrid");
+  const hg = document.getElementById("herbaGrid");
+  if(kg) kg.innerHTML = KUE.map(card).join("");
+  if(hg) hg.innerHTML = HERBA.map(card).join("");
+  const wo = document.getElementById("waOrder");
+  if(wo) wo.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent("Halo D'Haura, saya mau tanya-tanya dulu");
+}
+</script><script>var AUTOLOGIN = true;
+function dAgo(n){ var d = new Date(Date.now() - n*86400000); return d.toISOString().slice(0,10); }
+var DEMO = [
+  { id: 1, nama: "Bu Ratna", wa: "", kat: "Herbalife", visits: [
+    { t: dAgo(1), apa: "shake + teh" }, { t: dAgo(4), apa: "shake" }, { t: dAgo(8), apa: "shake + aloe" }] },
+  { id: 2, nama: "Pak Budi", wa: "", kat: "Campur", visits: [
+    { t: dAgo(2), apa: "bolu pandan" }, { t: dAgo(9), apa: "teh herbal" }] },
+  { id: 3, nama: "Pak Andi", wa: "", kat: "Kue", visits: [
+    { t: dAgo(0), apa: "brownies kukus" }, { t: dAgo(3), apa: "putu ayu" }] },
+  { id: 4, nama: "Mbak Sari", wa: "", kat: "Kue", visits: [
+    { t: dAgo(20), apa: "lapis pelangi" }] },
+  { id: 5, nama: "Bu Dewi", wa: "", kat: "Herbalife", visits: [
+    { t: dAgo(30), apa: "shake" }] }
+];</script><script>
+const KEY = "dhaura_customers_v1";
+const AKEY = "dhaura_auth";
+const USER = "nur";   // contoh sementara
+const PASS = "1234";  // contoh sementara
+let mem = null;
+let logged = false;
+function load(){
+  try { const v = JSON.parse(localStorage.getItem(KEY)); if(v) return v; } catch(e){}
+  return mem || [];
+}
+function save(d){
+  mem = d;
+  try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e){}
+}
+function today(){ return new Date().toISOString().slice(0,10); }
+function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function showMain(){
+  document.getElementById("lock").style.display = "none";
+  document.getElementById("main").style.display = "block";
+}
+function login(){
+  const u = document.getElementById("fUser").value.trim();
+  const p = document.getElementById("fPass").value;
+  if(u === USER && p === PASS){
+    logged = true;
+    try { sessionStorage.setItem(AKEY, "1"); } catch(e){}
+    document.getElementById("loginErr").textContent = "";
+    showMain(); render();
+  } else {
+    document.getElementById("loginErr").textContent = "Nama pengguna atau kata sandi salah.";
+  }
+}
+function logout(){
+  logged = false;
+  try { sessionStorage.removeItem(AKEY); } catch(e){}
+  document.getElementById("fUser").value = "";
+  document.getElementById("fPass").value = "";
+  document.getElementById("main").style.display = "none";
+  document.getElementById("lock").style.display = "block";
+}
+function addCust(){
+  const nama = document.getElementById("fNama").value.trim();
+  if(!nama){ document.getElementById("fNama").focus(); return; }
+  const d = load();
+  d.unshift({ id: Date.now(), nama, wa: document.getElementById("fWa").value.trim(),
+    kat: document.getElementById("fKat").value, visits: [] });
+  save(d);
+  document.getElementById("fNama").value = "";
+  document.getElementById("fWa").value = "";
+  render();
+}
+function addVisit(id){
+  const di = document.getElementById("d" + id);
+  const ii = document.getElementById("v" + id);
+  const tgl = di ? di.value : "";
+  if(!tgl){ if(di) di.focus(); return; }
+  const apa = ii ? ii.value.trim() : "";
+  const d = load();
+  const c = d.find(x => x.id === id);
+  if(c){ c.visits.unshift({ t: tgl, apa: apa || "-" }); save(d); render(); }
+}
+function delCust(id, btn){
+  if(!btn.dataset.armed){
+    btn.dataset.armed = "1";
+    btn.textContent = "Ketuk lagi untuk hapus";
+    setTimeout(() => { btn.dataset.armed = ""; btn.textContent = "Hapus"; }, 3000);
+    return;
+  }
+  save(load().filter(x => x.id !== id)); render();
+}
+function daysSince(iso){
+  if(!iso) return 9999;
+  return Math.floor((Date.now() - new Date(iso + "T00:00:00").getTime()) / 86400000);
+}
+function chartVisits(){
+  const days = [];
+  for(let i = 13; i >= 0; i--){
+    days.push(new Date(Date.now() - i * 86400000).toISOString().slice(0,10));
+  }
+  const all = load();
+  const counts = days.map(dd => all.reduce((a,c) => a + c.visits.filter(v => v.t === dd).length, 0));
+  const max = Math.max(1, ...counts);
+  const W = 560, H = 160, bw = W / days.length;
+  const bars = days.map((dd,i) => {
+    const h = (counts[i] / max) * (H - 62);
+    const x = i * bw + 4, y = H - 32 - h, cx = x + (bw - 8) / 2;
+    const lbl = (i % 2 === 0) ? dd.slice(8) + "/" + dd.slice(5,7) : "";
+    return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw-8).toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3"/>' +
+      '<text x="' + cx.toFixed(1) + '" y="' + (H-14) + '" class="cl">' + lbl + '</text>' +
+      (counts[i] ? '<text x="' + cx.toFixed(1) + '" y="' + (y-6).toFixed(1) + '" class="cv">' + counts[i] + '</text>' : '');
+  }).join("");
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="chart">' + bars + '</svg>';
+}
+function chartKat(){
+  const d = load();
+  const kats = ["Herbalife", "Kue", "Campur"];
+  const counts = kats.map(k => d.filter(c => c.kat === k).length);
+  const max = Math.max(1, ...counts);
+  return kats.map((k,i) => {
+    const pct = Math.round(counts[i] / max * 100);
+    return '<div class="krow"><div class="kl">' + k + ' · ' + counts[i] + '</div>' +
+      '<div class="bar"><div style="width:' + pct + '%"></div></div></div>';
+  }).join("");
+}
+function render(){
+  const d = load();
+  const q = (document.getElementById("q").value || "").toLowerCase();
+  const now = Date.now();
+  const inDays = n => d.filter(c => c.visits[0] && (now - new Date(c.visits[0].t + "T00:00:00").getTime()) < n * 86400000).length;
+  document.getElementById("sTotal").textContent = d.length;
+  document.getElementById("sWeek").textContent = inDays(7);
+  document.getElementById("sVisits").textContent = d.reduce((a,c) => a + c.visits.filter(v => (now - new Date(v.t + "T00:00:00").getTime()) < 30*86400000).length, 0);
+  const quiet = d.filter(c => daysSince(c.visits[0] && c.visits[0].t) > 14);
+  document.getElementById("sQuiet").textContent = quiet.length;
+  document.getElementById("chartVisits").innerHTML = chartVisits();
+  document.getElementById("chartKat").innerHTML = chartKat();
+  document.getElementById("nudge").innerHTML = quiet.length
+    ? quiet.slice(0,5).map(c => "• " + esc(c.nama) + " — terakhir " + (c.visits[0] ? esc(c.visits[0].t) : "belum pernah")).join("<br>")
+    : "Semua pelanggan aktif. Bagus.";
+  const t = today();
+  const list = d.filter(c => c.nama.toLowerCase().includes(q));
+  document.getElementById("list").innerHTML = list.map(c => {
+    const last = c.visits[0] ? c.visits[0].t : "-";
+    const hist = c.visits.slice(0,8).map(v => esc(v.t) + " — " + esc(v.apa)).join("<br>") || "Belum ada catatan tanggal.";
+    const wa = c.wa ? ' · <a href="https://wa.me/' + esc(c.wa) + '" target="_blank" rel="noopener">WA</a>' : '';
+    return '<div class="cust"><div class="nm">' + esc(c.nama) + '</div>' +
+      '<div class="small">' + esc(c.kat) + ' · terakhir: ' + esc(last) + wa + '</div>' +
+      '<div class="vform">' +
+      '<input type="date" id="d' + c.id + '" value="' + t + '">' +
+      '<input id="v' + c.id + '" placeholder="Belanja apa?" autocomplete="off">' +
+      '<button onclick="addVisit(' + c.id + ')">Catat</button>' +
+      '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div>' +
+      '<div class="hist">' + hist + '</div></div>';
+  }).join("") || "<p class='small'>Belum ada pelanggan.</p>";
+}
+function exportJson(){
+  const blob = new Blob([JSON.stringify(load())], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "dhaura-cadangan.json"; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+function importJson(el){
+  const f = el.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { try { const d = JSON.parse(r.result); if(Array.isArray(d)){ save(d); render(); } } catch(e){} el.value = ""; };
+  r.readAsText(f);
+}
+// Mode pratinjau: dilewati di pemakaian asli.
+let auto = false;
+try { auto = sessionStorage.getItem(AKEY) === "1"; } catch(e){}
+if(typeof AUTOLOGIN !== "undefined" && AUTOLOGIN) auto = true;
+if(auto){
+  logged = true;
+  showMain();
+  if(typeof DEMO !== "undefined" && DEMO && !load().length) mem = DEMO;
+  render();
+}
+
+function switchView(w){
+  var k = (w === 'K');
+  document.getElementById('viewK').style.display = k ? 'block' : 'none';
+  document.getElementById('viewA').style.display = k ? 'none' : 'block';
+  document.getElementById('navK').className = k ? '' : 'off';
+  document.getElementById('navA').className = k ? 'off' : '';
+  window.scrollTo(0,0);
+}
+renderPublic();</script></body></html>

@@ -10,21 +10,30 @@
 <div class="wrap">
   <p><a href="index.html">← Kembali ke katalog</a></p>
   <h2>Halaman admin</h2>
-  <p class="small">Data tersimpan di HP ini saja. PIN contoh: 1234.</p>
 
   <div id="lock">
-    <input id="pin" inputmode="numeric" type="password" placeholder="Masukkan PIN" autocomplete="off">
-    <div class="small" id="pinErr" style="color:#a00"></div>
-    <button onclick="unlock()">Buka</button>
+    <p class="small">Masuk dulu untuk membuka catatan dan dashboard.</p>
+    <input id="fUser" placeholder="Nama pengguna" autocomplete="username">
+    <input id="fPass" type="password" placeholder="Kata sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    <div class="small" id="loginErr" style="color:#a00"></div>
+    <button onclick="login()">Masuk</button>
+    <p class="small">Contoh sementara — pengguna nur, sandi 1234.</p>
   </div>
 
   <div id="main" style="display:none">
+    <p class="small"><a href="#" onclick="logout();return false">Keluar</a></p>
     <div class="dash">
       <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Pelanggan tercatat</div></div>
       <div class="stat"><div class="n" id="sWeek">0</div><div class="l">Datang 7 hari terakhir</div></div>
       <div class="stat"><div class="n" id="sQuiet">0</div><div class="l">Belum datang &gt; 14 hari</div></div>
       <div class="stat"><div class="n" id="sVisits">0</div><div class="l">Kunjungan 30 hari</div></div>
     </div>
+
+    <h3>Grafik kunjungan 14 hari</h3>
+    <div id="chartVisits"></div>
+
+    <h3>Pelanggan per jenis</h3>
+    <div id="chartKat"></div>
 
     <h3>Perlu disapa</h3>
     <div id="nudge" class="small">Memuat…</div>
@@ -60,7 +69,11 @@
 
 <script>
 const KEY = "dhaura_customers_v1";
+const AKEY = "dhaura_auth";
+const USER = "nur";   // contoh sementara
+const PASS = "1234";  // contoh sementara
 let mem = null;
+let logged = false;
 function load(){
   try { const v = JSON.parse(localStorage.getItem(KEY)); if(v) return v; } catch(e){}
   return mem || [];
@@ -71,14 +84,29 @@ function save(d){
 }
 function today(){ return new Date().toISOString().slice(0,10); }
 function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function unlock(){
-  if(document.getElementById("pin").value === "1234"){
-    document.getElementById("lock").style.display = "none";
-    document.getElementById("main").style.display = "block";
-    render();
+function showMain(){
+  document.getElementById("lock").style.display = "none";
+  document.getElementById("main").style.display = "block";
+}
+function login(){
+  const u = document.getElementById("fUser").value.trim();
+  const p = document.getElementById("fPass").value;
+  if(u === USER && p === PASS){
+    logged = true;
+    try { sessionStorage.setItem(AKEY, "1"); } catch(e){}
+    document.getElementById("loginErr").textContent = "";
+    showMain(); render();
   } else {
-    document.getElementById("pinErr").textContent = "PIN salah. Contoh: 1234.";
+    document.getElementById("loginErr").textContent = "Nama pengguna atau kata sandi salah.";
   }
+}
+function logout(){
+  logged = false;
+  try { sessionStorage.removeItem(AKEY); } catch(e){}
+  document.getElementById("fUser").value = "";
+  document.getElementById("fPass").value = "";
+  document.getElementById("main").style.display = "none";
+  document.getElementById("lock").style.display = "block";
 }
 function addCust(){
   const nama = document.getElementById("fNama").value.trim();
@@ -92,11 +120,14 @@ function addCust(){
   render();
 }
 function addVisit(id){
-  const inp = document.getElementById("v" + id);
-  const apa = inp ? inp.value.trim() : "";
+  const di = document.getElementById("d" + id);
+  const ii = document.getElementById("v" + id);
+  const tgl = di ? di.value : "";
+  if(!tgl){ if(di) di.focus(); return; }
+  const apa = ii ? ii.value.trim() : "";
   const d = load();
   const c = d.find(x => x.id === id);
-  if(c){ c.visits.unshift({ t: today(), apa: apa || "-" }); save(d); render(); }
+  if(c){ c.visits.unshift({ t: tgl, apa: apa || "-" }); save(d); render(); }
 }
 function delCust(id, btn){
   if(!btn.dataset.armed){
@@ -111,6 +142,36 @@ function daysSince(iso){
   if(!iso) return 9999;
   return Math.floor((Date.now() - new Date(iso + "T00:00:00").getTime()) / 86400000);
 }
+function chartVisits(){
+  const days = [];
+  for(let i = 13; i >= 0; i--){
+    days.push(new Date(Date.now() - i * 86400000).toISOString().slice(0,10));
+  }
+  const all = load();
+  const counts = days.map(dd => all.reduce((a,c) => a + c.visits.filter(v => v.t === dd).length, 0));
+  const max = Math.max(1, ...counts);
+  const W = 560, H = 160, bw = W / days.length;
+  const bars = days.map((dd,i) => {
+    const h = (counts[i] / max) * (H - 62);
+    const x = i * bw + 4, y = H - 32 - h, cx = x + (bw - 8) / 2;
+    const lbl = (i % 2 === 0) ? dd.slice(8) + "/" + dd.slice(5,7) : "";
+    return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw-8).toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3"/>' +
+      '<text x="' + cx.toFixed(1) + '" y="' + (H-14) + '" class="cl">' + lbl + '</text>' +
+      (counts[i] ? '<text x="' + cx.toFixed(1) + '" y="' + (y-6).toFixed(1) + '" class="cv">' + counts[i] + '</text>' : '');
+  }).join("");
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="chart">' + bars + '</svg>';
+}
+function chartKat(){
+  const d = load();
+  const kats = ["Herbalife", "Kue", "Campur"];
+  const counts = kats.map(k => d.filter(c => c.kat === k).length);
+  const max = Math.max(1, ...counts);
+  return kats.map((k,i) => {
+    const pct = Math.round(counts[i] / max * 100);
+    return '<div class="krow"><div class="kl">' + k + ' · ' + counts[i] + '</div>' +
+      '<div class="bar"><div style="width:' + pct + '%"></div></div></div>';
+  }).join("");
+}
 function render(){
   const d = load();
   const q = (document.getElementById("q").value || "").toLowerCase();
@@ -121,9 +182,12 @@ function render(){
   document.getElementById("sVisits").textContent = d.reduce((a,c) => a + c.visits.filter(v => (now - new Date(v.t + "T00:00:00").getTime()) < 30*86400000).length, 0);
   const quiet = d.filter(c => daysSince(c.visits[0] && c.visits[0].t) > 14);
   document.getElementById("sQuiet").textContent = quiet.length;
+  document.getElementById("chartVisits").innerHTML = chartVisits();
+  document.getElementById("chartKat").innerHTML = chartKat();
   document.getElementById("nudge").innerHTML = quiet.length
     ? quiet.slice(0,5).map(c => "• " + esc(c.nama) + " — terakhir " + (c.visits[0] ? esc(c.visits[0].t) : "belum pernah")).join("<br>")
     : "Semua pelanggan aktif. Bagus.";
+  const t = today();
   const list = d.filter(c => c.nama.toLowerCase().includes(q));
   document.getElementById("list").innerHTML = list.map(c => {
     const last = c.visits[0] ? c.visits[0].t : "-";
@@ -131,9 +195,10 @@ function render(){
     const wa = c.wa ? ' · <a href="https://wa.me/' + esc(c.wa) + '" target="_blank" rel="noopener">WA</a>' : '';
     return '<div class="cust"><div class="nm">' + esc(c.nama) + '</div>' +
       '<div class="small">' + esc(c.kat) + ' · terakhir: ' + esc(last) + wa + '</div>' +
-      '<div class="row" style="margin-top:8px">' +
-      '<input id="v' + c.id + '" placeholder="Belanja apa hari ini?" autocomplete="off">' +
-      '<button onclick="addVisit(' + c.id + ')">Catat datang</button>' +
+      '<div class="vform">' +
+      '<input type="date" id="d' + c.id + '" value="' + t + '">' +
+      '<input id="v' + c.id + '" placeholder="Belanja apa?" autocomplete="off">' +
+      '<button onclick="addVisit(' + c.id + ')">Catat</button>' +
       '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div>' +
       '<div class="hist">' + hist + '</div></div>';
   }).join("") || "<p class='small'>Belum ada pelanggan.</p>";
@@ -151,9 +216,12 @@ function importJson(el){
   r.readAsText(f);
 }
 // Mode pratinjau: dilewati di pemakaian asli.
-if(typeof AUTOLOGIN !== "undefined" && AUTOLOGIN){
-  document.getElementById("lock").style.display = "none";
-  document.getElementById("main").style.display = "block";
+let auto = false;
+try { auto = sessionStorage.getItem(AKEY) === "1"; } catch(e){}
+if(typeof AUTOLOGIN !== "undefined" && AUTOLOGIN) auto = true;
+if(auto){
+  logged = true;
+  showMain();
   if(typeof DEMO !== "undefined" && DEMO && !load().length) mem = DEMO;
   render();
 }

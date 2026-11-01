@@ -50,6 +50,20 @@ button.secondary { background:#6c757d; }
 .small { font-size:13px; opacity:.7; }
 .bar { height:10px; background:#f0e2cf; border-radius:999px; overflow:hidden; margin-top:6px; }
 .bar > div { height:100%; background:var(--acc); }
+.chart { width:100%; height:auto; background:#fff; border:1px solid var(--line); border-radius:12px; }
+.chart rect { fill:var(--acc); }
+.chart .cl { font-size:11px; fill:#8a7a68; text-anchor:middle; }
+.chart .cv { font-size:12px; font-weight:800; fill:#3d2b1f; text-anchor:middle; }
+.krow { margin:8px 0; }
+.krow .kl { font-size:14px; font-weight:700; }
+.vform { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.vform input[type="date"] { flex:1; min-width:130px; }
+.vform input:not([type]) { flex:2; min-width:130px; }
+.vform button { flex:1; min-width:90px; }
+.appnav { position:sticky; top:0; z-index:10; display:flex; gap:8px; padding:10px 14px;
+  background:var(--bg); border-bottom:1px solid var(--line); }
+.appnav button { flex:1; }
+.appnav button.off { background:#6c757d; }
 </style>
 </head>
 <body>
