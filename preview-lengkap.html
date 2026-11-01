@@ -58,6 +58,10 @@ button.secondary { background:#6c757d; }
 .stat .l { font-size:13px; opacity:.7; }
 .cust { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; margin:10px 0; }
 .cust .nm { font-weight:800; font-size:17px; }
+.cust-name { display:flex; justify-content:space-between; align-items:center;
+  width:100%; padding:0; margin:0; color:var(--ink); background:transparent;
+  text-align:left; font-size:18px; }
+.cust-name span { color:var(--acc); font-size:20px; }
 .hist { font-size:13px; opacity:.85; margin-top:6px; line-height:1.7; }
 .small { font-size:13px; opacity:.7; }
 .bar { height:10px; background:#f0e2cf; border-radius:999px; overflow:hidden; margin-top:6px; }
@@ -400,17 +404,23 @@ function render(){
   const list = d.filter(c => c.nama.toLowerCase().includes(q));
   document.getElementById("list").innerHTML = list.map(c => {
     const last = c.visits[0] ? c.visits[0].t : "-";
-    const hist = c.visits.slice(0,8).map(v => esc(v.t) + " — " + esc(v.apa)).join("<br>") || "Belum ada catatan tanggal.";
+    const recent = c.visits.slice(0,5).map(v => esc(v.t) + " — " + esc(v.apa)).join("<br>") || "Belum ada catatan pesanan.";
+    const all = c.visits.map(v => esc(v.t) + " — " + esc(v.apa)).join("<br>") || "Belum ada catatan pesanan.";
     const wa = c.wa ? ' · <a href="https://wa.me/' + esc(c.wa) + '" target="_blank" rel="noopener">WA</a>' : '';
-    return '<div class="cust"><div class="nm">' + esc(c.nama) + '</div>' +
-      '<div class="small">' + esc(c.kat) + ' · terakhir: ' + esc(last) + wa + '</div>' +
+    return '<div class="cust"><button class="cust-name" onclick="toggleHistory(' + c.id + ')">' + esc(c.nama) + ' <span>⌄</span></button>' +
+      '<div class="small">' + esc(c.kat) + wa + '</div>' +
       '<div class="vform">' +
       '<input type="date" id="d' + c.id + '" value="' + t + '">' +
       '<input id="v' + c.id + '" placeholder="Belanja apa?" autocomplete="off">' +
       '<button onclick="addVisit(' + c.id + ')">Catat</button>' +
       '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div>' +
-      '<div class="hist">' + hist + '</div></div>';
+      '<div class="hist recent-hist">' + recent + '</div>' +
+      '<div class="hist all-hist" id="hist' + c.id + '" style="display:none">' + all + '</div></div>';
   }).join("") || "<p class='small'>Belum ada pelanggan.</p>";
+}
+function toggleHistory(id){
+  const el = document.getElementById("hist" + id);
+  if(el) el.style.display = el.style.display === "none" ? "block" : "none";
 }
 function exportJson(){
   const blob = new Blob([JSON.stringify(load())], {type:"application/json"});
