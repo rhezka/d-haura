@@ -4,25 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>D'Haura — Kue & Nutrisi</title>
-<style>:root { --bg:#fff8f0; --ink:#3d2b1f; --card:#ffffff; --line:#ecdcc8; --acc:#b3541e; }
+<style>:root { --bg:#f4f8f1; --ink:#283b2e; --card:#ffffff; --line:#dce8d8; --acc:#4f805b; }
 * { box-sizing:border-box; }
 body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); }
-.top { padding:28px 18px 18px; text-align:center; }
+.top { position:relative; isolation:isolate; overflow:hidden; padding:28px 18px 24px; text-align:center;
+  background:linear-gradient(120deg,#e3f0df 0%,#f6faef 52%,#e8f2e4 100%); border-bottom:1px solid #d3e4d0; }
+.top:before,.top:after { content:""; position:absolute; z-index:-1; border-radius:50%; pointer-events:none; }
+.top:before { width:190px; height:190px; left:-70px; top:-115px; background:#b8d6b4; opacity:.48; }
+.top:after { width:130px; height:130px; right:-38px; bottom:-78px; background:#c8dfbd; opacity:.65; }
 .brand { margin:0; font-size:clamp(38px, 8vw, 58px); font-weight:900;
-  letter-spacing:-2px; line-height:1; color:#4a2d20;
-  text-shadow:0 2px 0 #efd8bd; }
-.admin-title { color:#4a2d20; font-size:clamp(26px, 5vw, 36px); letter-spacing:-.7px; }
+  letter-spacing:-2px; line-height:1; color:#284a34;
+  text-shadow:0 2px 0 #dcebd9; }
+.admin-title { color:#284a34; font-size:clamp(26px, 5vw, 36px); letter-spacing:-.7px; }
 .admin-title span { color:var(--acc); }
-.tag { opacity:.75; margin:4px 0 14px; }
+.tag { opacity:.8; margin:7px 0 14px; color:#55725d; }
 .actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
 .btn { background:var(--acc); color:#fff; padding:12px 18px; border-radius:999px; text-decoration:none; font-weight:700; display:inline-block; }
 .btn.ghost { background:transparent; color:var(--acc); border:2px solid var(--acc); }
 main { max-width:900px; margin:0 auto; padding:0 14px 40px; }
-.notice { background:#fff3cd; border:1px solid #e6cf8a; padding:10px 14px; border-radius:12px; margin:10px 0 18px; font-size:14px; }
-h2 { margin:26px 0 4px; }
+.notice { background:#eaf4e6; border:1px solid #ccdfc7; padding:10px 14px; border-radius:12px; margin:10px 0 18px; font-size:14px; }
+h2 { margin:26px 0 8px; color:#31563a; }
 .sub { margin:0 0 12px; opacity:.75; }
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
-.card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:18px; overflow:hidden;
+  box-shadow:0 5px 16px rgba(52,85,57,.08); transition:transform .18s ease,box-shadow .18s ease; }
+.card:hover { transform:translateY(-3px); box-shadow:0 10px 22px rgba(52,85,57,.14); }
 .card img { width:100%; height:150px; object-fit:cover; display:block; background:#f3e7d7; }
 .imgwrap { position:relative; }
 .card .imgwrap img { cursor:zoom-in; }
@@ -85,28 +91,28 @@ button.secondary { background:#6c757d; }
 .appnav { position:fixed; top:0; left:0; right:0; z-index:9999;
   display:flex; flex-direction:column; gap:6px;
   padding:calc(env(safe-area-inset-top, 0px) + 12px) 16px 10px;
-  background:linear-gradient(135deg,#fffaf3 0%,#f5e3cf 100%);
-  border-bottom:1px solid #e8d1b8;
-  box-shadow:0 5px 18px rgba(74,45,32,.16); }
+  background:linear-gradient(125deg,#e4f1df 0%,#f7fbf4 52%,#e7f2e4 100%);
+  border-bottom:1px solid #cfe0ca;
+  box-shadow:0 5px 18px rgba(44,77,49,.16); }
 .navrow { display:flex; gap:8px; }
 .navrow button { flex:1; padding:14px; font-size:16px; border-radius:14px;
   box-shadow:0 2px 5px rgba(74,45,32,.12); }
-.navrow button:not(.off) { background:linear-gradient(135deg,#b3541e,#d07839); }
-.navrow button.off { background:#fffaf3; color:#9a6543; border:1px solid #e4cfbb; box-shadow:none; }
+.navrow button:not(.off) { background:linear-gradient(135deg,#467d53,#6b9a70); }
+.navrow button.off { background:#fbfdf9; color:#52755a; border:1px solid #cfe0ca; box-shadow:none; }
 .appspace { height:0; }
 .admin-title { margin-top:0; }
 .wrap { padding-top:22px; }
 .login-card { max-width:440px; margin:18px auto; padding:22px;
-  border:1px solid #ead6c1; border-radius:20px;
-  background:linear-gradient(145deg,#fff 0%,#fff8ef 100%);
-  box-shadow:0 12px 30px rgba(74,45,32,.1); }
-.login-heading { margin:0 0 4px; font-size:24px; color:#4a2d20; }
-.login-sub { margin:0 0 14px; color:#8a7463; font-size:14px; }
+  border:1px solid #d4e4d0; border-radius:20px;
+  background:linear-gradient(145deg,#fff 0%,#f1f7ed 100%);
+  box-shadow:0 12px 30px rgba(44,77,49,.1); }
+.login-heading { margin:0 0 4px; font-size:24px; color:#284a34; }
+.login-sub { margin:0 0 14px; color:#6d8671; font-size:14px; }
 .login-fields { display:grid; gap:10px; }
 .login-fields input { margin:0; }
 .login-submit { width:100%; margin-top:12px; }
 .login-hint { margin:12px 0 0; padding:10px 12px; border-radius:10px;
-  background:#f7eadb; color:#73543e; }
+  background:#e8f1e3; color:#4e6c52; }
 .history-modal { position:fixed; inset:0; z-index:10000; display:flex;
   align-items:center; justify-content:center; padding:18px;
   background:rgba(39,25,17,.58); }
