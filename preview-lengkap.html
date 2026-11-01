@@ -62,6 +62,8 @@ button.secondary { background:#6c757d; }
   width:100%; padding:0; margin:0; color:var(--ink); background:transparent;
   text-align:left; font-size:18px; }
 .cust-name span { color:var(--acc); font-size:20px; }
+.recent-orders { margin:8px 0 2px; }
+.recent-orders .history-item { grid-template-columns:86px 1fr; padding:7px 0; }
 .hist { font-size:13px; opacity:.85; margin-top:6px; line-height:1.7; }
 .small { font-size:13px; opacity:.7; }
 .bar { height:10px; background:#f0e2cf; border-radius:999px; overflow:hidden; margin-top:6px; }
@@ -77,10 +79,31 @@ button.secondary { background:#6c757d; }
 .appnav { position:fixed; top:0; left:0; right:0; z-index:9999;
   display:flex; flex-direction:column; gap:6px;
   padding:calc(env(safe-area-inset-top, 0px) + 12px) 16px 10px;
-  background:#ffffff; border-bottom:1px solid var(--line);
-  box-shadow:0 2px 10px rgba(0,0,0,.12); }
+  background:linear-gradient(135deg,#fffaf3 0%,#f5e3cf 100%);
+  border-bottom:1px solid #e8d1b8;
+  box-shadow:0 5px 18px rgba(74,45,32,.16); }
 .navrow { display:flex; gap:8px; }
-.navrow button { flex:1; padding:15px 14px; font-size:16px; }
+.navrow button { flex:1; padding:14px; font-size:16px; border-radius:14px;
+  box-shadow:0 2px 5px rgba(74,45,32,.12); }
+.navrow button:not(.off) { background:linear-gradient(135deg,#b3541e,#d07839); }
+.navrow button.off { background:#fff; color:#765d4d; border:1px solid #e4cfbb; }
+.appspace { height:0; }
+.admin-title { margin-top:0; }
+.wrap { padding-top:22px; }
+.history-modal { position:fixed; inset:0; z-index:10000; display:flex;
+  align-items:center; justify-content:center; padding:18px;
+  background:rgba(39,25,17,.58); }
+.history-box { position:relative; width:min(100%,520px); max-height:82vh;
+  overflow:auto; padding:20px; border-radius:20px; background:#fffaf4;
+  box-shadow:0 18px 50px rgba(0,0,0,.25); }
+.history-title { margin:0 48px 3px 0; font-size:23px; color:#4a2d20; }
+.history-meta { color:#8a7463; font-size:13px; margin-bottom:16px; }
+.history-close { position:absolute; right:14px; top:14px; border-radius:50%;
+  width:38px; height:38px; padding:0; background:#f0dfce; color:#4a2d20; }
+.history-item { display:grid; grid-template-columns:100px 1fr; gap:10px;
+  padding:12px 0; border-top:1px solid #eadbca; }
+.history-date { color:#9b5730; font-weight:800; font-size:13px; }
+.history-order { color:#3d2b1f; }
 .appnav button { flex:1; }
 .appnav button.off { background:#6c757d; }
 </style></head><body><div class="appnav"><div class="navrow"><button id="navK" onclick="switchView('K')">Katalog</button><button id="navA" class="off" onclick="switchView('A')">Admin</button></div></div><div id="appspace"></div><div id="viewK">
@@ -403,24 +426,42 @@ function render(){
   const t = today();
   const list = d.filter(c => c.nama.toLowerCase().includes(q));
   document.getElementById("list").innerHTML = list.map(c => {
-    const last = c.visits[0] ? c.visits[0].t : "-";
-    const recent = c.visits.slice(0,5).map(v => esc(v.t) + " — " + esc(v.apa)).join("<br>") || "Belum ada catatan pesanan.";
-    const all = c.visits.map(v => esc(v.t) + " — " + esc(v.apa)).join("<br>") || "Belum ada catatan pesanan.";
+    const recent = c.visits.slice(0,5).map(v =>
+      '<div class="history-item"><div class="history-date">' + esc(v.t) + '</div><div class="history-order">' + esc(v.apa || "-") + '</div></div>'
+    ).join("") || '<div class="small">Belum ada pesanan tercatat.</div>';
     const wa = c.wa ? ' · <a href="https://wa.me/' + esc(c.wa) + '" target="_blank" rel="noopener">WA</a>' : '';
-    return '<div class="cust"><button class="cust-name" onclick="toggleHistory(' + c.id + ')">' + esc(c.nama) + ' <span>⌄</span></button>' +
+    return '<div class="cust"><button class="cust-name" onclick="showHistory(' + c.id + ')">' + esc(c.nama) + ' <span>↗</span></button>' +
       '<div class="small">' + esc(c.kat) + wa + '</div>' +
+      '<div class="recent-orders">' + recent + '</div>' +
       '<div class="vform">' +
       '<input type="date" id="d' + c.id + '" value="' + t + '">' +
       '<input id="v' + c.id + '" placeholder="Belanja apa?" autocomplete="off">' +
       '<button onclick="addVisit(' + c.id + ')">Catat</button>' +
-      '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div>' +
-      '<div class="hist recent-hist">' + recent + '</div>' +
-      '<div class="hist all-hist" id="hist' + c.id + '" style="display:none">' + all + '</div></div>';
+      '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div></div>';
   }).join("") || "<p class='small'>Belum ada pelanggan.</p>";
 }
-function toggleHistory(id){
-  const el = document.getElementById("hist" + id);
-  if(el) el.style.display = el.style.display === "none" ? "block" : "none";
+function showHistory(id){
+  const c = load().find(x => x.id === id);
+  if(!c) return;
+  const rows = c.visits.length ? c.visits.map(v =>
+    '<div class="history-item"><div class="history-date">' + esc(v.t) + '</div><div class="history-order">' + esc(v.apa || "-") + '</div></div>'
+  ).join("") : '<p class="small">Belum ada pesanan tercatat.</p>';
+  const old = document.getElementById("historyModal");
+  if(old) old.remove();
+  const modal = document.createElement("div");
+  modal.id = "historyModal";
+  modal.className = "history-modal";
+  modal.innerHTML = '<div class="history-box" role="dialog" aria-modal="true">' +
+    '<button class="history-close" onclick="closeHistory()" aria-label="Tutup">✕</button>' +
+    '<h3 class="history-title">' + esc(c.nama) + '</h3>' +
+    '<div class="history-meta">' + esc(c.kat) + (c.wa ? ' · ' + esc(c.wa) : '') + ' · ' + c.visits.length + ' pesanan</div>' + rows +
+    '</div>';
+  modal.addEventListener("click", e => { if(e.target === modal) closeHistory(); });
+  document.body.appendChild(modal);
+}
+function closeHistory(){
+  const modal = document.getElementById("historyModal");
+  if(modal) modal.remove();
 }
 function exportJson(){
   const blob = new Blob([JSON.stringify(load())], {type:"application/json"});
