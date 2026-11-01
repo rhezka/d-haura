@@ -15,6 +15,10 @@ body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
 .brand { margin:0; font-size:clamp(38px, 8vw, 58px); font-weight:900;
   letter-spacing:-2px; line-height:1; color:#284a34;
   text-shadow:0 2px 0 #dcebd9; }
+.established { display:flex; align-items:center; justify-content:center; gap:9px;
+  margin:8px 0 2px; color:#66836b; font-size:11px; font-weight:800;
+  letter-spacing:2.4px; }
+.established span { width:22px; height:1px; background:#9bb69a; }
 .admin-title { color:#284a34; font-size:clamp(26px, 5vw, 36px); letter-spacing:-.7px; }
 .admin-title span { color:var(--acc); }
 .tag { opacity:.8; margin:7px 0 14px; color:#55725d; }
@@ -135,6 +139,7 @@ button.secondary { background:#6c757d; }
 <body>
 <header class="top">
   <h1 class="brand">d’haura</h1>
+  <div class="established"><span></span> EST. 2024 <span></span></div>
   <div class="tag">Kue & nutrisi harian</div>
   <div class="actions">
     <a class="btn" id="waOrder" href="https://wa.me/6280000000000?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
