@@ -100,6 +100,10 @@ button.secondary { background:#6c757d; }
 .appspace { height:0; }
 .admin-title { margin-top:0; }
 .wrap { padding-top:34px; }
+.logout-icon { position:fixed; top:calc(env(safe-area-inset-top, 0px) + 78px); right:16px;
+  z-index:20; width:42px; height:42px; padding:0; border-radius:50%;
+  color:#4f805b; background:#edf5e9; border:1px solid #cfe0ca;
+  font-size:22px; line-height:1; box-shadow:0 3px 10px rgba(44,77,49,.12); }
 .login-card { max-width:440px; margin:18px auto; padding:22px;
   border:1px solid #d4e4d0; border-radius:20px;
   background:linear-gradient(145deg,#fff 0%,#f1f7ed 100%);
@@ -185,7 +189,7 @@ button.secondary { background:#6c757d; }
   </div>
 
   <div id="main" style="display:none">
-    <p class="small"><a href="#" onclick="logout();return false">Keluar</a></p>
+    <button class="logout-icon" onclick="logout()" title="Keluar" aria-label="Keluar">⏻</button>
     <div class="dash">
       <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Pelanggan tercatat</div></div>
       <div class="stat"><div class="n" id="sWeek">0</div><div class="l">Datang 7 hari terakhir</div></div>
