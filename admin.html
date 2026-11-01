@@ -8,16 +8,16 @@
 </head>
 <body>
 <div class="wrap">
-  <p><a href="index.html">← Kembali ke katalog</a></p>
-  <h2 class="admin-title">Dashboard <span>D’Haura</span></h2>
-
-  <div id="lock">
-    <p class="small">Masuk dulu untuk membuka catatan dan dashboard.</p>
-    <input id="fUser" placeholder="Nama pengguna" autocomplete="username">
-    <input id="fPass" type="password" placeholder="Kata sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+  <div id="lock" class="login-card">
+    <h2 class="login-heading">Masuk ke D’Haura</h2>
+    <p class="login-sub">Kelola pelanggan dan pesanan toko.</p>
+    <div class="login-fields">
+      <input id="fUser" placeholder="Nama pengguna" autocomplete="username">
+      <input id="fPass" type="password" placeholder="Kata sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    </div>
     <div class="small" id="loginErr" style="color:#a00"></div>
-    <button onclick="login()">Masuk</button>
-    <p class="small">Contoh sementara — pengguna nur, sandi 1234.</p>
+    <button class="login-submit" onclick="login()">Masuk</button>
+    <p class="small login-hint">Contoh sementara: <b>nur</b> / <b>1234</b></p>
   </div>
 
   <div id="main" style="display:none">
@@ -227,10 +227,13 @@ function showHistory(id){
     '</div>';
   modal.addEventListener("click", e => { if(e.target === modal) closeHistory(); });
   document.body.appendChild(modal);
+  document.body.style.overflow = "hidden";
+  modal.querySelector(".history-box").addEventListener("touchmove", e => e.stopPropagation(), {passive:true});
 }
 function closeHistory(){
   const modal = document.getElementById("historyModal");
   if(modal) modal.remove();
+  document.body.style.overflow = "";
 }
 function exportJson(){
   const blob = new Blob([JSON.stringify(load())], {type:"application/json"});

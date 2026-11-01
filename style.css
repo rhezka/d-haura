@@ -86,15 +86,27 @@ button.secondary { background:#6c757d; }
 .navrow button { flex:1; padding:14px; font-size:16px; border-radius:14px;
   box-shadow:0 2px 5px rgba(74,45,32,.12); }
 .navrow button:not(.off) { background:linear-gradient(135deg,#b3541e,#d07839); }
-.navrow button.off { background:#fff; color:#765d4d; border:1px solid #e4cfbb; }
+.navrow button.off { background:#fffaf3; color:#9a6543; border:1px solid #e4cfbb; box-shadow:none; }
 .appspace { height:0; }
 .admin-title { margin-top:0; }
 .wrap { padding-top:22px; }
+.login-card { max-width:440px; margin:18px auto; padding:22px;
+  border:1px solid #ead6c1; border-radius:20px;
+  background:linear-gradient(145deg,#fff 0%,#fff8ef 100%);
+  box-shadow:0 12px 30px rgba(74,45,32,.1); }
+.login-heading { margin:0 0 4px; font-size:24px; color:#4a2d20; }
+.login-sub { margin:0 0 14px; color:#8a7463; font-size:14px; }
+.login-fields { display:grid; gap:10px; }
+.login-fields input { margin:0; }
+.login-submit { width:100%; margin-top:12px; }
+.login-hint { margin:12px 0 0; padding:10px 12px; border-radius:10px;
+  background:#f7eadb; color:#73543e; }
 .history-modal { position:fixed; inset:0; z-index:10000; display:flex;
   align-items:center; justify-content:center; padding:18px;
   background:rgba(39,25,17,.58); }
 .history-box { position:relative; width:min(100%,520px); max-height:82vh;
-  overflow:auto; padding:20px; border-radius:20px; background:#fffaf4;
+  overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch;
+  touch-action:pan-y; padding:20px; border-radius:20px; background:#fffaf4;
   box-shadow:0 18px 50px rgba(0,0,0,.25); }
 .history-title { margin:0 48px 3px 0; font-size:23px; color:#4a2d20; }
 .history-meta { color:#8a7463; font-size:13px; margin-bottom:16px; }
