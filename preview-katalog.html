@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D'Haura — Kue & Nutrisi</title>
+<style>:root { --bg:#fff8f0; --ink:#3d2b1f; --card:#ffffff; --line:#ecdcc8; --acc:#b3541e; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); }
+.top { padding:28px 18px 18px; text-align:center; }
+.brand { font-size:42px; font-weight:800; letter-spacing:.5px; }
+.tag { opacity:.75; margin:4px 0 14px; }
+.actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.btn { background:var(--acc); color:#fff; padding:12px 18px; border-radius:999px; text-decoration:none; font-weight:700; display:inline-block; }
+.btn.ghost { background:transparent; color:var(--acc); border:2px solid var(--acc); }
+main { max-width:900px; margin:0 auto; padding:0 14px 40px; }
+.notice { background:#fff3cd; border:1px solid #e6cf8a; padding:10px 14px; border-radius:12px; margin:10px 0 18px; font-size:14px; }
+h2 { margin:26px 0 4px; }
+.sub { margin:0 0 12px; opacity:.75; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.card img { width:100%; height:150px; object-fit:cover; display:block; background:#f3e7d7; }
+.card .pad { padding:10px 12px 14px; }
+.card .name { font-weight:800; }
+.card .price { color:var(--acc); font-weight:800; margin-top:4px; }
+.card .desc { font-size:13px; opacity:.75; margin-top:4px; }
+.badge { display:inline-block; font-size:12px; font-weight:800; background:#1e7e34; color:#fff; border-radius:999px; padding:2px 10px; margin-top:6px; }
+.badge.pending { background:#8a6d00; }
+.card .order { margin-top:10px; display:block; text-align:center; font-size:14px; padding:9px 10px; }
+.info ul { line-height:1.8; }
+footer { text-align:center; padding:26px; opacity:.6; font-size:13px; }
+/* admin */
+.wrap { max-width:900px; margin:0 auto; padding:14px 14px 60px; }
+input,select,textarea { width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--line); font-size:15px; margin:6px 0; background:#fff; }
+button { background:var(--acc); color:#fff; border:0; border-radius:10px; padding:11px 14px; font-weight:800; font-size:15px; }
+button.secondary { background:#6c757d; }
+.row { display:flex; gap:8px; flex-wrap:wrap; }
+.row > * { flex:1; min-width:140px; }
+.dash { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin:12px 0; }
+.stat { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; }
+.stat .n { font-size:26px; font-weight:800; }
+.stat .l { font-size:13px; opacity:.7; }
+.cust { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; margin:10px 0; }
+.cust .nm { font-weight:800; font-size:17px; }
+.hist { font-size:13px; opacity:.85; margin-top:6px; line-height:1.7; }
+.small { font-size:13px; opacity:.7; }
+.bar { height:10px; background:#f0e2cf; border-radius:999px; overflow:hidden; margin-top:6px; }
+.bar > div { height:100%; background:var(--acc); }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">d’haura</div>
+  <div class="tag">Kue buatan ibu & pendamping nutrisi harian</div>
+  <div class="actions">
+    <a class="btn" id="waOrder" href="https://wa.me/6280000000000?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
+    <a class="btn ghost" href="admin.html">Halaman ibu</a>
+  </div>
+</header>
+
+<main>
+  <section class="notice">
+    Foto dan harga masih contoh dari internet. Nanti diganti foto asli dan harga asli ibu.
+  </section>
+
+  <section>
+    <h2>Kue buatan</h2>
+    <p class="sub">Sekitar 3–5 jenis, ganti tiap hari. Yang sudah berlogo halal diberi tanda.</p>
+    <div class="grid" id="kueGrid"></div>
+  </section>
+
+  <section>
+    <h2>Herbalife</h2>
+    <p class="sub">Stok cukup banyak dan sering dicari. Harga pasti lewat WA saja, biar jelas kebutuhan dan aturannya.</p>
+    <div class="grid" id="herbaGrid"></div>
+  </section>
+
+  <section class="info">
+    <h2>Info toko</h2>
+    <ul>
+      <li>Alamat dan jam buka: menyusul, ditulis di sini.</li>
+      <li>Pembayaran: tunai dan QRIS D'Haura.</li>
+      <li>Pesanan acara (hajatan, arisan, kantor): hubungi minimal 3 hari sebelumnya.</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  d-haura.my.id · sistem contoh, foto contoh, harga contoh
+</footer>
+
+<script>// Data contoh — nanti diganti data asli ibu.
+const WA_NUMBER = "6280000000000"; // GANTI nomor WA ibu
+
+const KUE = [
+  { nama:"Bolu Pandan Contoh", harga:25000, halal:"resmi", desc:"Contoh saja. Nanti foto dan harga asli.", img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=600&q=80" },
+  { nama:"Brownies Kukus Contoh", harga:30000, halal:"proses", desc:"Izin halal sedang diurus.", img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" },
+  { nama:"Lapis Pelangi Contoh", harga:20000, halal:"proses", desc:"Contoh saja.", img:"https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80" },
+  { nama:"Putu Ayu Contoh", harga:15000, halal:"proses", desc:"Contoh saja.", img:"https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&q=80" },
+  { nama:"Kue Kering Contoh", harga:35000, halal:"proses", desc:"Untuk pesanan acara.", img:"https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600&q=80" },
+];
+
+const HERBA = [
+  { nama:"Shake Nutrisi Contoh", harga:0, desc:"Harga via WA. Foto contoh, bukan foto produk asli.", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" },
+  { nama:"Teh Herbal Contoh", harga:0, desc:"Harga via WA. Dosis disesuaikan kebutuhan.", img:"https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80" },
+  { nama:"Aloe / Pendamping Contoh", harga:0, desc:"Harga via WA.", img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80" },
+];
+
+function rupiah(n){ if(!n) return "Tanya via WA"; return "Rp " + n.toLocaleString("id-ID"); }
+function waLink(nama){
+  const t = encodeURIComponent("Halo D'Haura, saya mau tanya " + nama);
+  return "https://wa.me/" + WA_NUMBER + "?text=" + t;
+}
+function card(p){
+  const badge = p.halal === "resmi"
+    ? '<span class="badge">Halal</span>'
+    : (p.halal === "proses" ? '<span class="badge pending">Halal segera</span>' : '');
+  return '<div class="card">' +
+    '<img loading="lazy" src="' + p.img + '" alt="' + p.nama + '" onerror="this.style.display=\'none\'">' +
+    '<div class="pad"><div class="name">' + p.nama + '</div>' +
+    '<div class="price">' + rupiah(p.harga) + '</div>' +
+    '<div class="desc">' + p.desc + '</div>' + badge +
+    '<a class="btn order" target="_blank" rel="noopener" href="' + waLink(p.nama) + '">Tanya / Pesan</a>' +
+    '</div></div>';
+}
+function renderPublic(){
+  const kg = document.getElementById("kueGrid");
+  const hg = document.getElementById("herbaGrid");
+  if(kg) kg.innerHTML = KUE.map(card).join("");
+  if(hg) hg.innerHTML = HERBA.map(card).join("");
+  const wo = document.getElementById("waOrder");
+  if(wo) wo.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent("Halo D'Haura, saya mau tanya-tanya dulu");
+}
+</script>
+<script>
+  renderPublic();
+</script>
+</body>
+</html>
