@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D'Haura — Kue & Nutrisi</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <h1 class="brand">d’haura</h1>
+  <div class="established"><span></span> EST. 2024 <span></span></div>
+  <div class="tag">Kue & nutrisi harian</div>
+  <div class="actions">
+    <a class="btn" id="waOrder" href="https://wa.me/6280000000000?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
+    <a class="btn ghost" href="admin.html">Admin</a>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2>Kue</h2>
+    <div class="grid" id="kueGrid"></div>
+  </section>
+
+  <section>
+    <h2>Herbalife</h2>
+    <div class="grid" id="herbaGrid"></div>
+  </section>
+
+  <section class="info">
+    <h2>Info toko</h2>
+    <ul>
+      <li>Alamat dan jam buka: menyusul.</li>
+      <li>Pembayaran: tunai dan QRIS D'Haura.</li>
+      <li>Pesanan acara: hubungi minimal 3 hari sebelumnya.</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  d-haura.my.id
+</footer>
+<div id="modal" style="display:none"></div>
+
+<script src="app.js"></script>
+<script>
+  renderPublic();
+</script>
+</body>
+</html>

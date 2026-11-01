@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D'Haura — Admin</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <div id="lock" class="login-card">
+    <h2 class="login-heading">Masuk ke D’Haura</h2>
+    <p class="login-sub">Kelola pelanggan dan pesanan toko.</p>
+    <div class="login-fields">
+      <input id="fUser" placeholder="Nama pengguna" autocomplete="username">
+      <input id="fPass" type="password" placeholder="Kata sandi" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+    </div>
+    <div class="small" id="loginErr" style="color:#a00"></div>
+    <button class="login-submit" onclick="login()">Masuk</button>
+    <p class="small login-hint">Contoh sementara: <b>nur</b> / <b>1234</b></p>
+  </div>
+
+  <div id="main" style="display:none">
+    <button class="logout-icon" onclick="logout()" title="Keluar" aria-label="Keluar">⏻</button>
+    <div class="dash">
+      <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Pelanggan tercatat</div></div>
+      <div class="stat"><div class="n" id="sWeek">0</div><div class="l">Datang 7 hari terakhir</div></div>
+      <div class="stat"><div class="n" id="sQuiet">0</div><div class="l">Belum datang &gt; 14 hari</div></div>
+      <div class="stat"><div class="n" id="sVisits">0</div><div class="l">Kunjungan 30 hari</div></div>
+    </div>
+
+    <h3>Grafik kunjungan 14 hari</h3>
+    <div id="chartVisits"></div>
+
+    <h3>Pelanggan per jenis</h3>
+    <div id="chartKat"></div>
+
+    <h3>Perlu disapa</h3>
+    <div id="nudge" class="small">Memuat…</div>
+
+    <h3>Tambah pelanggan</h3>
+    <div class="form-grid">
+      <input id="fNama" placeholder="Nama pelanggan" autocomplete="off">
+      <input id="fWa" placeholder="No WA (opsional)" inputmode="tel" autocomplete="off">
+      <select id="fKat">
+        <option value="Herbalife">Herbalife</option>
+        <option value="Kue">Kue</option>
+        <option value="Campur">Campur</option>
+      </select>
+      <input id="fOrderDate" type="date" aria-label="Tanggal pesanan">
+      <select id="fOrder" class="span-2"><option value="">Pilih menu / pesanan pertama (opsional)</option></select>
+      <input id="fOrderCustom" class="span-2" placeholder="Nama menu lain" style="display:none">
+      <button class="span-2" onclick="addCust()">Simpan pelanggan</button>
+    </div>
+
+    <h3>Cari pelanggan</h3>
+    <input id="q" placeholder="Ketik nama…" oninput="render()" autocomplete="off">
+
+    <div id="list"></div>
+
+    <h3>Cadangan</h3>
+    <div class="row">
+      <button class="secondary" onclick="exportJson()">Unduh cadangan</button>
+      <button class="secondary" onclick="document.getElementById('imp').click()">Pulihkan</button>
+      <input id="imp" type="file" accept="application/json" style="display:none" onchange="importJson(this)">
+    </div>
+    <p class="small">Kalau ganti HP, unduh cadangan di HP lama lalu pulihkan di HP baru.</p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+const KEY = "dhaura_customers_v1";
+const AKEY = "dhaura_auth";
+const USER = "nur";   // contoh sementara
+const PASS = "1234";  // contoh sementara
+let mem = null;
+let logged = false;
+function load(){
+  try { const v = JSON.parse(localStorage.getItem(KEY)); if(v) return v; } catch(e){}
+  return mem || [];
+}
+function save(d){
+  mem = d;
+  try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e){}
+}
+function today(){ return new Date().toISOString().slice(0,10); }
+function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function showMain(){
+  document.getElementById("lock").style.display = "none";
+  document.getElementById("main").style.display = "block";
+}
+function login(){
+  const u = document.getElementById("fUser").value.trim();
+  const p = document.getElementById("fPass").value;
+  if(u === USER && p === PASS){
+    logged = true;
+    try { sessionStorage.setItem(AKEY, "1"); } catch(e){}
+    document.getElementById("loginErr").textContent = "";
+    showMain(); render();
+  } else {
+    document.getElementById("loginErr").textContent = "Nama pengguna atau kata sandi salah.";
+  }
+}
+function logout(){
+  logged = false;
+  try { sessionStorage.removeItem(AKEY); } catch(e){}
+  document.getElementById("fUser").value = "";
+  document.getElementById("fPass").value = "";
+  document.getElementById("main").style.display = "none";
+  document.getElementById("lock").style.display = "block";
+}
+function addCust(){
+  const nama = document.getElementById("fNama").value.trim();
+  if(!nama){ document.getElementById("fNama").focus(); return; }
+  const d = load();
+  let order = document.getElementById("fOrder").value.trim();
+  if(order === "__custom") order = document.getElementById("fOrderCustom").value.trim();
+  const orderDate = document.getElementById("fOrderDate").value;
+  d.unshift({ id: Date.now(), nama, wa: document.getElementById("fWa").value.trim(),
+    kat: document.getElementById("fKat").value,
+    visits: order ? [{ id: Date.now()+1, t: orderDate || today(), apa: order }] : [] });
+  save(d);
+  document.getElementById("fNama").value = "";
+  document.getElementById("fWa").value = "";
+  document.getElementById("fOrder").value = "";
+  document.getElementById("fOrderDate").value = "";
+  document.getElementById("fOrderCustom").value = "";
+  document.getElementById("fOrderCustom").style.display = "none";
+  render();
+}
+function addVisit(id){
+  const di = document.getElementById("d" + id);
+  const ii = document.getElementById("v" + id);
+  const tgl = di ? di.value : "";
+  if(!tgl){ if(di) di.focus(); return; }
+  let apa = ii ? ii.value.trim() : "";
+  if(apa === "__custom") apa = document.getElementById("vCustom" + id).value.trim();
+  if(!apa) return;
+  const d = load();
+  const c = d.find(x => x.id === id);
+  if(c){ c.visits.unshift({ id: Date.now(), t: tgl, apa: apa }); save(d); render(); }
+}
+function delCust(id, btn){
+  if(!btn.dataset.armed){
+    btn.dataset.armed = "1";
+    btn.textContent = "Ketuk lagi untuk hapus";
+    setTimeout(() => { btn.dataset.armed = ""; btn.textContent = "Hapus"; }, 3000);
+    return;
+  }
+  save(load().filter(x => x.id !== id)); render();
+}
+function daysSince(iso){
+  if(!iso) return 9999;
+  return Math.floor((Date.now() - new Date(iso + "T00:00:00").getTime()) / 86400000);
+}
+function formatDate(iso){
+  if(!iso) return "-";
+  const p=iso.split("-"); return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : iso;
+}
+function chartVisits(){
+  const days = [];
+  for(let i = 13; i >= 0; i--){
+    days.push(new Date(Date.now() - i * 86400000).toISOString().slice(0,10));
+  }
+  const all = load();
+  const counts = days.map(dd => all.reduce((a,c) => a + c.visits.filter(v => v.t === dd).length, 0));
+  const max = Math.max(1, ...counts);
+  const W = 560, H = 160, bw = W / days.length;
+  const bars = days.map((dd,i) => {
+    const h = (counts[i] / max) * (H - 62);
+    const x = i * bw + 4, y = H - 32 - h, cx = x + (bw - 8) / 2;
+    const lbl = (i % 2 === 0) ? dd.slice(8) + "/" + dd.slice(5,7) : "";
+    return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (bw-8).toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3"/>' +
+      '<text x="' + cx.toFixed(1) + '" y="' + (H-14) + '" class="cl">' + lbl + '</text>' +
+      (counts[i] ? '<text x="' + cx.toFixed(1) + '" y="' + (y-6).toFixed(1) + '" class="cv">' + counts[i] + '</text>' : '');
+  }).join("");
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" class="chart">' + bars + '</svg>';
+}
+function chartKat(){
+  const d = load();
+  const kats = ["Herbalife", "Kue", "Campur"];
+  const counts = kats.map(k => d.filter(c => c.kat === k).length);
+  const max = Math.max(1, ...counts);
+  return kats.map((k,i) => {
+    const pct = Math.round(counts[i] / max * 100);
+    return '<div class="krow"><div class="kl">' + k + ' · ' + counts[i] + '</div>' +
+      '<div class="bar"><div style="width:' + pct + '%"></div></div></div>';
+  }).join("");
+}
+function render(){
+  fillOrderSelects();
+  const d = load();
+  const q = (document.getElementById("q").value || "").toLowerCase();
+  const now = Date.now();
+  const inDays = n => d.filter(c => c.visits[0] && (now - new Date(c.visits[0].t + "T00:00:00").getTime()) < n * 86400000).length;
+  document.getElementById("sTotal").textContent = d.length;
+  document.getElementById("sWeek").textContent = inDays(7);
+  document.getElementById("sVisits").textContent = d.reduce((a,c) => a + c.visits.filter(v => (now - new Date(v.t + "T00:00:00").getTime()) < 30*86400000).length, 0);
+  const quiet = d.filter(c => daysSince(c.visits[0] && c.visits[0].t) > 14);
+  document.getElementById("sQuiet").textContent = quiet.length;
+  document.getElementById("chartVisits").innerHTML = chartVisits();
+  document.getElementById("chartKat").innerHTML = chartKat();
+  document.getElementById("nudge").innerHTML = quiet.length
+    ? quiet.slice(0,5).map(c => "• " + esc(c.nama) + " — terakhir " + (c.visits[0] ? esc(c.visits[0].t) : "belum pernah")).join("<br>")
+    : "Semua pelanggan aktif. Bagus.";
+  const t = today();
+  const list = d.filter(c => c.nama.toLowerCase().includes(q));
+  document.getElementById("list").innerHTML = list.map(c => {
+    const recent = c.visits.slice(0,5).map((v,i) =>
+      '<div class="history-item"><div class="history-date">' + esc(formatDate(v.t)) + '</div><div class="history-order">' + esc(v.apa || "-") +
+      '<button class="edit-order" title="Edit pesanan" aria-label="Edit pesanan" onclick="editVisit(' + c.id + ',' + i + ')">✎</button></div></div>'
+    ).join("") || '<div class="small">Belum ada pesanan tercatat.</div>';
+    const wa = c.wa ? ' · <a href="https://wa.me/' + esc(c.wa) + '" target="_blank" rel="noopener">WA</a>' : '';
+    return '<div class="cust"><button class="cust-name" onclick="showHistory(' + c.id + ')">' + esc(c.nama) + ' <span>↗</span></button>' +
+      '<div class="small">' + esc(c.kat) + wa + '</div>' +
+      '<div class="recent-orders">' + recent + '</div>' +
+      '<div class="vform">' +
+      '<input type="date" id="d' + c.id + '" value="' + t + '">' +
+      '<select id="v' + c.id + '" onchange="toggleCustom(\'vCustom' + c.id + '\',this.value)"><option value="">Pilih menu</option>' + menuOptions() + '<option value="__custom">Lainnya…</option></select>' +
+      '<input class="span-2 custom-menu" id="vCustom' + c.id + '" placeholder="Nama menu lain" style="display:none">' +
+      '<button onclick="addVisit(' + c.id + ')">Catat</button>' +
+      '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div></div>';
+  }).join("") || "<p class='small'>Belum ada pelanggan.</p>";
+}
+function fillOrderSelects(){
+  const base='<option value="">Pilih menu / pesanan pertama (opsional)</option>'+menuOptions()+'<option value="__custom">Lainnya…</option>';
+  const add=document.getElementById("fOrder");
+  if(add && !add.dataset.ready){add.innerHTML=base;add.dataset.ready="1";add.addEventListener("change",function(){document.getElementById("fOrderCustom").style.display=this.value==="__custom"?"block":"none"})}
+  document.querySelectorAll("select[id^='v']").forEach(sel => {
+    if(sel.dataset.ready) return;
+    const selected=sel.value;
+    sel.innerHTML='<option value="">Pilih menu</option>'+menuOptions(selected)+'<option value="__custom">Lainnya…</option>';
+    sel.dataset.ready="1";
+  });
+}
+function toggleCustom(id,value){const el=document.getElementById(id);if(el)el.style.display=value==="__custom"?"block":"none"}
+function showHistory(id){
+  const c = load().find(x => x.id === id);
+  if(!c) return;
+  const rows = c.visits.length ? c.visits.map(v =>
+    '<div class="history-item"><div class="history-date">' + esc(formatDate(v.t)) + '</div><div class="history-order">' + esc(v.apa || "-") + '</div></div>'
+  ).join("") : '<p class="small">Belum ada pesanan tercatat.</p>';
+  const old = document.getElementById("historyModal");
+  if(old) old.remove();
+  const modal = document.createElement("div");
+  modal.id = "historyModal";
+  modal.className = "history-modal";
+  modal.innerHTML = '<div class="history-box" role="dialog" aria-modal="true">' +
+    '<button class="history-close" onclick="closeHistory()" aria-label="Tutup">✕</button>' +
+    '<h3 class="history-title">' + esc(c.nama) + '</h3>' +
+    '<div class="history-meta">' + esc(c.kat) + (c.wa ? ' · ' + esc(c.wa) : '') + ' · ' + c.visits.length + ' pesanan</div>' + rows +
+    '</div>';
+  modal.addEventListener("click", e => { if(e.target === modal) closeHistory(); });
+  document.body.appendChild(modal);
+  document.body.style.overflow = "hidden";
+  modal.querySelector(".history-box").addEventListener("touchmove", e => e.stopPropagation(), {passive:true});
+}
+function menuOptions(selected){
+  const items = [...KUE, ...HERBA].map(p => p.nama);
+  const known = items.includes(selected);
+  return items.map(x => '<option value="' + esc(x) + '"' + (x === selected ? ' selected' : '') + '>' + esc(x) + '</option>').join("") +
+    (selected && !known ? '<option value="' + esc(selected) + '" selected>' + esc(selected) + '</option>' : '');
+}
+function editVisit(id,index){
+  const c=load().find(x=>x.id===id); if(!c||!c.visits[index]) return;
+    const v=c.visits[index]; if(!v) return;
+  const modal=document.createElement("div"); modal.className="history-modal"; modal.id="editVisitModal";
+  modal.innerHTML='<div class="history-box edit-box"><button class="history-close" onclick="closeEditVisit()">✕</button>'+
+    '<h3 class="history-title">Edit pesanan</h3><label>Tanggal</label><input id="editVisitDate" type="date" value="'+esc(v.t)+'">'+
+    '<label>Menu</label><select id="editVisitMenu">'+menuOptions(v.apa)+'<option value="__custom">Lainnya…</option></select><input id="editVisitCustom" placeholder="Nama menu lain" style="display:none">'+
+    '<button class="login-submit" onclick="saveVisitEdit('+id+','+index+')">Simpan perubahan</button></div>';
+  document.body.appendChild(modal); document.body.style.overflow="hidden";
+  modal.addEventListener("click",e=>{if(e.target===modal)closeEditVisit()});
+  document.getElementById("editVisitMenu").addEventListener("change",function(){document.getElementById("editVisitCustom").style.display=this.value==="__custom"?"block":"none"});
+}
+function saveVisitEdit(id,index){
+  const c=load().find(x=>x.id===id); if(!c)return;
+  if(!c.visits[index])return;
+  const date=document.getElementById("editVisitDate").value;
+  let menu=document.getElementById("editVisitMenu").value;
+  const custom=document.getElementById("editVisitCustom").value.trim();
+  if(menu==="__custom") menu=custom;
+  if(!date||!menu)return;
+  c.visits[index]={...c.visits[index],t:date,apa:menu}; save(load()); closeEditVisit(); render();
+}
+function closeEditVisit(){const m=document.getElementById("editVisitModal");if(m)m.remove();document.body.style.overflow=""}
+function closeHistory(){
+  const modal = document.getElementById("historyModal");
+  if(modal) modal.remove();
+  document.body.style.overflow = "";
+}
+function exportJson(){
+  const blob = new Blob([JSON.stringify(load())], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "dhaura-cadangan.json"; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+function importJson(el){
+  const f = el.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { try { const d = JSON.parse(r.result); if(Array.isArray(d)){ save(d); render(); } } catch(e){} el.value = ""; };
+  r.readAsText(f);
+}
+// Mode pratinjau: data contoh dimuat, login tetap berlaku.
+if(typeof DEMO !== "undefined" && DEMO && !load().length) mem = DEMO;
+let auto = false;
+try { auto = sessionStorage.getItem(AKEY) === "1"; } catch(e){}
+if(typeof AUTOLOGIN !== "undefined" && AUTOLOGIN) auto = true;
+if(auto){
+  logged = true;
+  showMain();
+  render();
+}
+</script>
+</body>
+</html>
