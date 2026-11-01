@@ -51,9 +51,8 @@ function waLink(nama){
 }
 function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function card(p, kind, i){
-  const stamp = p.halal ? '<img class="stamp" src="img/halal-indonesia.svg" alt="Halal Indonesia">' : '';
   return '<div class="card">' +
-    '<div class="imgwrap"><img loading="lazy" src="' + p.img + '" alt="' + esc(p.nama) + '" onclick="openDetail(\'' + kind + '\',' + i + ')" onerror="this.style.display=\'none\'">' + stamp + '</div>' +
+    '<div class="imgwrap"><img loading="lazy" src="' + p.img + '" alt="' + esc(p.nama) + '" onclick="openDetail(\'' + kind + '\',' + i + ')" onerror="this.style.display=\'none\'"></div>' +
     '<div class="pad"><div class="name">' + esc(p.nama) + '</div>' +
     '<div class="price">' + rupiah(p.harga) + '</div>' +
     '<a class="btn order" target="_blank" rel="noopener" href="' + waLink(p.nama) + '">Tanya / Pesan</a>' +
