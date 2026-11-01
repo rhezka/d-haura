@@ -3,6 +3,21 @@
 Tayang sementara di GitHub Pages (sebelum domain d-haura.my.id diarahkan).
 Ganti foto, nama, harga, dan nomor WA dengan data asli bila sudah siap.
 
+## APK Android
+
+Project Capacitor disiapkan dengan workflow GitHub Actions `Build Android APK`.
+Jalankan workflow manual dari tab Actions; file APK debug akan tersedia sebagai
+artifact `dhaura-debug-apk` setelah build selesai.
+
+## Google Sheets
+
+- Folder Drive `D-HAURA` berisi Sheet `D-HAURA — Database Pelanggan dan Pesanan`.
+- Tab `Pelanggan` dan `Pesanan`; berisi 12 pelanggan dan 41 pesanan DEMO.
+- Contoh tersebut hanya data dummy untuk melihat dashboard, boleh dihapus saat
+  mulai memakai data sungguhan.
+- APK saat ini belum tersinkron ke Sheet; integrasi butuh endpoint Apps Script
+  dan autentikasi sebelum data dapat dipakai bersama lintas perangkat.
+
 Contoh awal. Foto dan harga masih contoh dari internet, wajib diganti foto dan harga asli sebelum tayang.
 
 Isi:

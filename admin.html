@@ -74,11 +74,29 @@ const KEY = "dhaura_customers_v1";
 const AKEY = "dhaura_auth";
 const USER = "nur";   // contoh sementara
 const PASS = "1234";  // contoh sementara
+// Data demo awal APK/pratinjau. Bisa dihapus nanti dari halaman admin atau reset storage.
+function demoDate(daysAgo){ const d=new Date(Date.now()-daysAgo*86400000); return d.toISOString().slice(0,10); }
+const DEMO_CUSTOMERS = [
+  {id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[[1,"Shake Nutrisi"],[4,"Teh Herbal"],[8,"Aloe Pendamping"],[12,"Shake Nutrisi"],[18,"Teh Herbal"],[25,"Shake Nutrisi"]]},
+  {id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[[2,"Bolu Pandan"],[9,"Shake Nutrisi"],[16,"Brownies Kukus"],[23,"Teh Herbal"]]},
+  {id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[[0,"Brownies Kukus"],[3,"Putu Ayu"],[7,"Kue Kering"],[11,"Bolu Pandan"],[19,"Lapis Pelangi"],[28,"Brownies Kukus"]]},
+  {id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[[20,"Lapis Pelangi"],[34,"Putu Ayu"],[48,"Bolu Pandan"]]},
+  {id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[[30,"Shake Nutrisi"],[40,"Teh Herbal"]]},
+  {id:6,nama:"Bu Lina",wa:"",kat:"Campur",visits:[[1,"Aloe Pendamping"],[5,"Bolu Pandan"],[13,"Shake Nutrisi"]]},
+  {id:7,nama:"Mbak Rina",wa:"",kat:"Herbalife",visits:[[6,"Teh Herbal"],[14,"Shake Nutrisi"],[21,"Aloe Pendamping"]]},
+  {id:8,nama:"Pak Joko",wa:"",kat:"Kue",visits:[[4,"Kue Kering"],[10,"Bolu Pandan"]]},
+  {id:9,nama:"Bu Maya",wa:"",kat:"Campur",visits:[[3,"Putu Ayu"],[8,"Shake Nutrisi"],[15,"Brownies Kukus"],[22,"Teh Herbal"]]},
+  {id:10,nama:"Mbak Tuti",wa:"",kat:"Kue",visits:[[17,"Lapis Pelangi"],[29,"Kue Kering"]]},
+  {id:11,nama:"Bu Nia",wa:"",kat:"Herbalife",visits:[[2,"Shake Nutrisi"],[9,"Aloe Pendamping"],[16,"Teh Herbal"]]},
+  {id:12,nama:"Pak Rahmat",wa:"",kat:"Campur",visits:[[0,"Bolu Pandan"],[7,"Teh Herbal"],[20,"Brownies Kukus"]]}
+].map(c=>({...c,visits:c.visits.map(([days,apa],i)=>({id:c.id*100+i,t:demoDate(days),apa}))}));
 let mem = null;
 let logged = false;
 function load(){
   try { const v = JSON.parse(localStorage.getItem(KEY)); if(v) return v; } catch(e){}
-  return mem || [];
+  if(mem) return mem;
+  mem=DEMO_CUSTOMERS;
+  return mem;
 }
 function save(d){
   mem = d;
@@ -257,7 +275,10 @@ function showHistory(id){
   modal.querySelector(".history-box").addEventListener("touchmove", e => e.stopPropagation(), {passive:true});
 }
 function menuOptions(selected){
-  const items = [...KUE, ...HERBA].map(p => p.nama);
+  const items = (typeof KUE !== "undefined" ? [...KUE, ...HERBA].map(p => p.nama) : [
+    "Bolu Pandan","Brownies Kukus","Lapis Pelangi","Putu Ayu","Kue Kering",
+    "Shake Nutrisi","Teh Herbal","Aloe Pendamping"
+  ]);
   const known = items.includes(selected);
   return items.map(x => '<option value="' + esc(x) + '"' + (x === selected ? ' selected' : '') + '>' + esc(x) + '</option>').join("") +
     (selected && !known ? '<option value="' + esc(selected) + '" selected>' + esc(selected) + '</option>' : '');

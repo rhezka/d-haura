@@ -1,5 +1,14 @@
 # CHANGELOG d-haura
 
+## 2026-11-02 — Data contoh Sheets + kerangka build APK
+- Tier: 1 (kode) + data dummy baru di Sheet atas persetujuan user.
+- Backup: Google Sheets disalin ke `1e7wcNC83DNGRBOIykotSBb64Fm4afmnz-sxDbJR7tNw`; kode sebelum perubahan di git commit `206b1ad`.
+- Perubahan: buat folder Drive `D-HAURA`; buat Sheet dua tab `Pelanggan`/`Pesanan`, isi 12 pelanggan dan 41 pesanan dummy; tambah project Capacitor Android dan workflow GitHub Actions untuk APK debug.
+- Menu admin diambil dari `KUE` dan `HERBA` pada katalog; ada input Lainnya.
+- Verifikasi: Sheets API baca balik 13 baris Pelanggan (termasuk header) dan 42 baris Pesanan; `npx cap sync android` sukses; APK build menunggu workflow GitHub.
+- Data pengguna terpengaruh: Sheet baru diisi data dummy atas permintaan, bukan data pelanggan nyata.
+- Rollback: hapus data dummy tab `Pelanggan`/`Pesanan` setelah backup, atau pulihkan salinan Sheet di folder `BACKUP`.
+
 ## 2026-11-01 — Tayang di GitHub Pages
 - Repo GitHub rhezka/d-haura, Pages aktif dari branch master.
 - Alamat sementara tayang dan terverifikasi 200.
