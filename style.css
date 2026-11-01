@@ -86,7 +86,7 @@ button.secondary { background:#6c757d; }
 .krow .kl { font-size:14px; font-weight:700; }
 .vform { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:8px; }
 .vform input, .vform button { width:100%; min-width:0; margin:0; }
-.appnav { position:fixed; top:env(safe-area-inset-top, 0px); left:0; right:0; z-index:9999;
+.appnav { position:fixed; top:0; left:0; right:0; z-index:9999;
   display:flex; flex-direction:column; gap:6px;
   padding:calc(env(safe-area-inset-top, 0px) + 12px) 16px 10px;
   background:linear-gradient(125deg,#e4f1df 0%,#f7fbf4 52%,#e7f2e4 100%);
