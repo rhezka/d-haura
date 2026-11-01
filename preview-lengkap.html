@@ -2,7 +2,11 @@
 * { box-sizing:border-box; }
 body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); }
 .top { padding:28px 18px 18px; text-align:center; }
-.brand { font-size:42px; font-weight:800; letter-spacing:.5px; }
+.brand { margin:0; font-size:clamp(38px, 8vw, 58px); font-weight:900;
+  letter-spacing:-2px; line-height:1; color:#4a2d20;
+  text-shadow:0 2px 0 #efd8bd; }
+.admin-title { color:#4a2d20; font-size:clamp(26px, 5vw, 36px); letter-spacing:-.7px; }
+.admin-title span { color:var(--acc); }
 .tag { opacity:.75; margin:4px 0 14px; }
 .actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
 .btn { background:var(--acc); color:#fff; padding:12px 18px; border-radius:999px; text-decoration:none; font-weight:700; display:inline-block; }
@@ -45,6 +49,9 @@ button { background:var(--acc); color:#fff; border:0; border-radius:10px; paddin
 button.secondary { background:#6c757d; }
 .row { display:flex; gap:8px; flex-wrap:wrap; }
 .row > * { flex:1; min-width:140px; }
+.form-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 12px; }
+.form-grid input, .form-grid select, .form-grid button { min-width:0; width:100%; margin:0; }
+.span-2 { grid-column:span 2; }
 .dash { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin:12px 0; }
 .stat { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px; }
 .stat .n { font-size:26px; font-weight:800; }
@@ -61,10 +68,8 @@ button.secondary { background:#6c757d; }
 .chart .cv { font-size:12px; font-weight:800; fill:#3d2b1f; text-anchor:middle; }
 .krow { margin:8px 0; }
 .krow .kl { font-size:14px; font-weight:700; }
-.vform { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
-.vform input[type="date"] { flex:1; min-width:130px; }
-.vform input:not([type]) { flex:2; min-width:130px; }
-.vform button { flex:1; min-width:90px; }
+.vform { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:8px; }
+.vform input, .vform button { width:100%; min-width:0; margin:0; }
 .appnav { position:fixed; top:0; left:0; right:0; z-index:9999;
   display:flex; flex-direction:column; gap:6px;
   padding:calc(env(safe-area-inset-top, 0px) + 12px) 16px 10px;
@@ -72,12 +77,11 @@ button.secondary { background:#6c757d; }
   box-shadow:0 2px 10px rgba(0,0,0,.12); }
 .navrow { display:flex; gap:8px; }
 .navrow button { flex:1; padding:15px 14px; font-size:16px; }
-.vtag { font-size:10px; color:#bbb; text-align:right; }
 .appnav button { flex:1; }
 .appnav button.off { background:#6c757d; }
 </style></head><body><div class="appnav"><div class="navrow"><button id="navK" onclick="switchView('K')">Katalog</button><button id="navA" class="off" onclick="switchView('A')">Admin</button></div></div><div id="appspace"></div><div id="viewK">
 <header class="top">
-  <div class="brand">d’haura</div>
+  <h1 class="brand">d’haura</h1>
   <div class="tag">Kue & nutrisi harian</div>
 </header>
 
@@ -114,7 +118,7 @@ button.secondary { background:#6c757d; }
 </div><div id="viewA" style="display:none">
 <div class="wrap">
   
-  <h2>Halaman admin</h2>
+  <h2 class="admin-title">Dashboard <span>D’Haura</span></h2>
 
   <div id="lock">
     <p class="small">Masuk dulu untuk membuka catatan dan dashboard.</p>
@@ -144,17 +148,17 @@ button.secondary { background:#6c757d; }
     <div id="nudge" class="small">Memuat…</div>
 
     <h3>Tambah pelanggan</h3>
-    <div class="row">
+    <div class="form-grid">
       <input id="fNama" placeholder="Nama pelanggan" autocomplete="off">
       <input id="fWa" placeholder="No WA (opsional)" inputmode="tel" autocomplete="off">
-    </div>
-    <div class="row">
       <select id="fKat">
         <option value="Herbalife">Herbalife</option>
         <option value="Kue">Kue</option>
         <option value="Campur">Campur</option>
       </select>
-      <button onclick="addCust()">Simpan</button>
+      <input id="fOrderDate" type="date" aria-label="Tanggal pesanan">
+      <input id="fOrder" class="span-2" placeholder="Menu / pesanan pertama (opsional)" autocomplete="off">
+      <button class="span-2" onclick="addCust()">Simpan pelanggan</button>
     </div>
 
     <h3>Cari pelanggan</h3>
@@ -312,11 +316,16 @@ function addCust(){
   const nama = document.getElementById("fNama").value.trim();
   if(!nama){ document.getElementById("fNama").focus(); return; }
   const d = load();
+  const order = document.getElementById("fOrder").value.trim();
+  const orderDate = document.getElementById("fOrderDate").value;
   d.unshift({ id: Date.now(), nama, wa: document.getElementById("fWa").value.trim(),
-    kat: document.getElementById("fKat").value, visits: [] });
+    kat: document.getElementById("fKat").value,
+    visits: order ? [{ t: orderDate || today(), apa: order }] : [] });
   save(d);
   document.getElementById("fNama").value = "";
   document.getElementById("fWa").value = "";
+  document.getElementById("fOrder").value = "";
+  document.getElementById("fOrderDate").value = "";
   render();
 }
 function addVisit(id){

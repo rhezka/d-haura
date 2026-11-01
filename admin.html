@@ -9,7 +9,7 @@
 <body>
 <div class="wrap">
   <p><a href="index.html">← Kembali ke katalog</a></p>
-  <h2>Halaman admin</h2>
+  <h2 class="admin-title">Dashboard <span>D’Haura</span></h2>
 
   <div id="lock">
     <p class="small">Masuk dulu untuk membuka catatan dan dashboard.</p>
@@ -39,17 +39,17 @@
     <div id="nudge" class="small">Memuat…</div>
 
     <h3>Tambah pelanggan</h3>
-    <div class="row">
+    <div class="form-grid">
       <input id="fNama" placeholder="Nama pelanggan" autocomplete="off">
       <input id="fWa" placeholder="No WA (opsional)" inputmode="tel" autocomplete="off">
-    </div>
-    <div class="row">
       <select id="fKat">
         <option value="Herbalife">Herbalife</option>
         <option value="Kue">Kue</option>
         <option value="Campur">Campur</option>
       </select>
-      <button onclick="addCust()">Simpan</button>
+      <input id="fOrderDate" type="date" aria-label="Tanggal pesanan">
+      <input id="fOrder" class="span-2" placeholder="Menu / pesanan pertama (opsional)" autocomplete="off">
+      <button class="span-2" onclick="addCust()">Simpan pelanggan</button>
     </div>
 
     <h3>Cari pelanggan</h3>
@@ -112,11 +112,16 @@ function addCust(){
   const nama = document.getElementById("fNama").value.trim();
   if(!nama){ document.getElementById("fNama").focus(); return; }
   const d = load();
+  const order = document.getElementById("fOrder").value.trim();
+  const orderDate = document.getElementById("fOrderDate").value;
   d.unshift({ id: Date.now(), nama, wa: document.getElementById("fWa").value.trim(),
-    kat: document.getElementById("fKat").value, visits: [] });
+    kat: document.getElementById("fKat").value,
+    visits: order ? [{ t: orderDate || today(), apa: order }] : [] });
   save(d);
   document.getElementById("fNama").value = "";
   document.getElementById("fWa").value = "";
+  document.getElementById("fOrder").value = "";
+  document.getElementById("fOrderDate").value = "";
   render();
 }
 function addVisit(id){
