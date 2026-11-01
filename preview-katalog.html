@@ -20,6 +20,11 @@ h2 { margin:26px 0 4px; }
 .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
 .card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
 .card img { width:100%; height:150px; object-fit:cover; display:block; background:#f3e7d7; }
+.imgwrap { position:relative; }
+.stamp { position:absolute; top:8px; left:8px; background:#1e7e34; color:#fff;
+  font-size:12px; font-weight:800; letter-spacing:1px;
+  border:2px solid #fff; border-radius:8px; padding:3px 10px;
+  transform:rotate(-8deg); box-shadow:0 1px 4px rgba(0,0,0,.3); }
 .card .pad { padding:10px 12px 14px; }
 .card .name { font-weight:800; }
 .card .price { color:var(--acc); font-weight:800; margin-top:4px; }
@@ -51,59 +56,53 @@ button.secondary { background:#6c757d; }
 <body>
 <header class="top">
   <div class="brand">d’haura</div>
-  <div class="tag">Kue buatan ibu & pendamping nutrisi harian</div>
+  <div class="tag">Kue & nutrisi harian</div>
   <div class="actions">
     <a class="btn" id="waOrder" href="https://wa.me/6280000000000?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
-    <a class="btn ghost" href="admin.html">Halaman ibu</a>
+    <a class="btn ghost" href="admin.html">Admin</a>
   </div>
 </header>
 
 <main>
-  <section class="notice">
-    Foto dan harga masih contoh dari internet. Nanti diganti foto asli dan harga asli ibu.
-  </section>
-
   <section>
-    <h2>Kue buatan</h2>
-    <p class="sub">Sekitar 3–5 jenis, ganti tiap hari. Yang sudah berlogo halal diberi tanda.</p>
+    <h2>Kue</h2>
     <div class="grid" id="kueGrid"></div>
   </section>
 
   <section>
     <h2>Herbalife</h2>
-    <p class="sub">Stok cukup banyak dan sering dicari. Harga pasti lewat WA saja, biar jelas kebutuhan dan aturannya.</p>
     <div class="grid" id="herbaGrid"></div>
   </section>
 
   <section class="info">
     <h2>Info toko</h2>
     <ul>
-      <li>Alamat dan jam buka: menyusul, ditulis di sini.</li>
+      <li>Alamat dan jam buka: menyusul.</li>
       <li>Pembayaran: tunai dan QRIS D'Haura.</li>
-      <li>Pesanan acara (hajatan, arisan, kantor): hubungi minimal 3 hari sebelumnya.</li>
+      <li>Pesanan acara: hubungi minimal 3 hari sebelumnya.</li>
     </ul>
   </section>
 </main>
 
 <footer>
-  d-haura.my.id · sistem contoh, foto contoh, harga contoh
+  d-haura.my.id
 </footer>
 
-<script>// Data contoh — nanti diganti data asli ibu.
-const WA_NUMBER = "6280000000000"; // GANTI nomor WA ibu
+<script>// Data final (struktur). Foto, nama, dan harga menyusul data asli.
+const WA_NUMBER = "6280000000000"; // GANTI nomor WA
 
 const KUE = [
-  { nama:"Bolu Pandan Contoh", harga:25000, halal:"resmi", desc:"Contoh saja. Nanti foto dan harga asli.", img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=600&q=80" },
-  { nama:"Brownies Kukus Contoh", harga:30000, halal:"proses", desc:"Izin halal sedang diurus.", img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" },
-  { nama:"Lapis Pelangi Contoh", harga:20000, halal:"proses", desc:"Contoh saja.", img:"https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80" },
-  { nama:"Putu Ayu Contoh", harga:15000, halal:"proses", desc:"Contoh saja.", img:"https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&q=80" },
-  { nama:"Kue Kering Contoh", harga:35000, halal:"proses", desc:"Untuk pesanan acara.", img:"https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600&q=80" },
+  { nama:"Bolu Pandan", harga:25000, halal:true, img:"https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=600&q=80" },
+  { nama:"Brownies Kukus", harga:30000, halal:false, img:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&q=80" },
+  { nama:"Lapis Pelangi", harga:20000, halal:false, img:"https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80" },
+  { nama:"Putu Ayu", harga:15000, halal:false, img:"https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=600&q=80" },
+  { nama:"Kue Kering", harga:35000, halal:false, img:"https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600&q=80" },
 ];
 
 const HERBA = [
-  { nama:"Shake Nutrisi Contoh", harga:0, desc:"Harga via WA. Foto contoh, bukan foto produk asli.", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" },
-  { nama:"Teh Herbal Contoh", harga:0, desc:"Harga via WA. Dosis disesuaikan kebutuhan.", img:"https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80" },
-  { nama:"Aloe / Pendamping Contoh", harga:0, desc:"Harga via WA.", img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80" },
+  { nama:"Shake Nutrisi", harga:0, img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80" },
+  { nama:"Teh Herbal", harga:0, img:"https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80" },
+  { nama:"Aloe Pendamping", harga:0, img:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80" },
 ];
 
 function rupiah(n){ if(!n) return "Tanya via WA"; return "Rp " + n.toLocaleString("id-ID"); }
@@ -112,14 +111,11 @@ function waLink(nama){
   return "https://wa.me/" + WA_NUMBER + "?text=" + t;
 }
 function card(p){
-  const badge = p.halal === "resmi"
-    ? '<span class="badge">Halal</span>'
-    : (p.halal === "proses" ? '<span class="badge pending">Halal segera</span>' : '');
+  const stamp = p.halal ? '<span class="stamp">HALAL</span>' : '';
   return '<div class="card">' +
-    '<img loading="lazy" src="' + p.img + '" alt="' + p.nama + '" onerror="this.style.display=\'none\'">' +
+    '<div class="imgwrap"><img loading="lazy" src="' + p.img + '" alt="' + p.nama + '" onerror="this.style.display=\'none\'">' + stamp + '</div>' +
     '<div class="pad"><div class="name">' + p.nama + '</div>' +
     '<div class="price">' + rupiah(p.harga) + '</div>' +
-    '<div class="desc">' + p.desc + '</div>' + badge +
     '<a class="btn order" target="_blank" rel="noopener" href="' + waLink(p.nama) + '">Tanya / Pesan</a>' +
     '</div></div>';
 }
