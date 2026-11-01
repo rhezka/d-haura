@@ -128,6 +128,10 @@ button.secondary { background:#6c757d; }
   width:38px; height:38px; padding:0; background:#f0dfce; color:#4a2d20; }
 .history-item { display:grid; grid-template-columns:minmax(112px, 128px) minmax(0,1fr); gap:10px;
   align-items:start; padding:12px 0; border-top:1px solid #dce8d8; }
+.history-date { white-space:nowrap; }
+.history-order { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.edit-order { flex:0 0 auto; width:30px; height:30px; margin:-4px 0 0; padding:0;
+  border-radius:9px; background:#e8f1e3; color:#467d53; font-size:18px; }
 .history-date { white-space:nowrap; font-size:13px; }
 .history-order { display:flex; align-items:start; gap:8px; justify-content:space-between; }
 .edit-order { flex:0 0 auto; width:30px; height:30px; padding:0; margin:-4px 0 0;
@@ -217,6 +221,7 @@ button.secondary { background:#6c757d; }
       </select>
       <input id="fOrderDate" type="date" aria-label="Tanggal pesanan">
       <select id="fOrder" class="span-2"><option value="">Pilih menu / pesanan pertama (opsional)</option></select>
+      <input id="fOrderCustom" class="span-2" placeholder="Nama menu lain" style="display:none">
       <button class="span-2" onclick="addCust()">Simpan pelanggan</button>
     </div>
 
@@ -234,6 +239,7 @@ button.secondary { background:#6c757d; }
     <p class="small">Kalau ganti HP, unduh cadangan di HP lama lalu pulihkan di HP baru.</p>
   </div>
 </div>
+
 
 
 </div><script>// Data final (struktur). Foto, nama, dan harga menyusul data asli.
@@ -330,7 +336,7 @@ function renderPublic(){
   const wo = document.getElementById("waOrder");
   if(wo) wo.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent("Halo D'Haura, saya mau tanya-tanya dulu");
 }
-</script><script>var AUTOLOGIN=false;function dAgo(n){var d=new Date(Date.now()-n*86400000);return d.toISOString().slice(0,10)}var DEMO=[{id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[{t:dAgo(1),apa:"shake + teh"}]},{id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[{t:dAgo(2),apa:"bolu pandan"}]},{id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[{t:dAgo(0),apa:"brownies kukus"}]},{id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[{t:dAgo(20),apa:"lapis pelangi"}]},{id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[{t:dAgo(30),apa:"shake"}]}];</script><script>
+</script><script>var AUTOLOGIN=false;function dAgo(n){var d=new Date(Date.now()-n*86400000);return d.toISOString().slice(0,10)}var DEMO=[{id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[{t:dAgo(1),apa:"Shake Nutrisi"},{t:dAgo(4),apa:"Teh Herbal"},{t:dAgo(8),apa:"Aloe Pendamping"},{t:dAgo(12),apa:"Shake Nutrisi"},{t:dAgo(18),apa:"Teh Herbal"},{t:dAgo(25),apa:"Shake Nutrisi"}]},{id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[{t:dAgo(2),apa:"Bolu Pandan"},{t:dAgo(9),apa:"Shake Nutrisi"},{t:dAgo(16),apa:"Brownies Kukus"},{t:dAgo(23),apa:"Teh Herbal"}]},{id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[{t:dAgo(0),apa:"Brownies Kukus"},{t:dAgo(3),apa:"Putu Ayu"},{t:dAgo(7),apa:"Kue Kering"},{t:dAgo(11),apa:"Bolu Pandan"},{t:dAgo(19),apa:"Lapis Pelangi"},{t:dAgo(28),apa:"Brownies Kukus"}]},{id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[{t:dAgo(20),apa:"Lapis Pelangi"},{t:dAgo(34),apa:"Putu Ayu"},{t:dAgo(48),apa:"Bolu Pandan"}]},{id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[{t:dAgo(30),apa:"Shake Nutrisi"},{t:dAgo(40),apa:"Teh Herbal"}]},{id:6,nama:"Bu Lina",wa:"",kat:"Campur",visits:[{t:dAgo(1),apa:"Aloe Pendamping"},{t:dAgo(5),apa:"Bolu Pandan"},{t:dAgo(13),apa:"Shake Nutrisi"}]},{id:7,nama:"Mbak Rina",wa:"",kat:"Herbalife",visits:[{t:dAgo(6),apa:"Teh Herbal"},{t:dAgo(14),apa:"Shake Nutrisi"},{t:dAgo(21),apa:"Aloe Pendamping"}]},{id:8,nama:"Pak Joko",wa:"",kat:"Kue",visits:[{t:dAgo(4),apa:"Kue Kering"},{t:dAgo(10),apa:"Bolu Pandan"}]},{id:9,nama:"Bu Maya",wa:"",kat:"Campur",visits:[{t:dAgo(3),apa:"Putu Ayu"},{t:dAgo(8),apa:"Shake Nutrisi"},{t:dAgo(15),apa:"Brownies Kukus"},{t:dAgo(22),apa:"Teh Herbal"}]},{id:10,nama:"Mbak Tuti",wa:"",kat:"Kue",visits:[{t:dAgo(17),apa:"Lapis Pelangi"},{t:dAgo(29),apa:"Kue Kering"}]},{id:11,nama:"Bu Nia",wa:"",kat:"Herbalife",visits:[{t:dAgo(2),apa:"Shake Nutrisi"},{t:dAgo(9),apa:"Aloe Pendamping"},{t:dAgo(16),apa:"Teh Herbal"}]},{id:12,nama:"Pak Rahmat",wa:"",kat:"Campur",visits:[{t:dAgo(0),apa:"Bolu Pandan"},{t:dAgo(7),apa:"Teh Herbal"},{t:dAgo(20),apa:"Brownies Kukus"}]}];</script><script>
 const KEY = "dhaura_customers_v1";
 const AKEY = "dhaura_auth";
 const USER = "nur";   // contoh sementara
@@ -376,16 +382,18 @@ function addCust(){
   if(!nama){ document.getElementById("fNama").focus(); return; }
   const d = load();
   let order = document.getElementById("fOrder").value.trim();
-  if(order === "__custom") order = prompt("Tulis nama menu pesanan:") || "";
+  if(order === "__custom") order = document.getElementById("fOrderCustom").value.trim();
   const orderDate = document.getElementById("fOrderDate").value;
   d.unshift({ id: Date.now(), nama, wa: document.getElementById("fWa").value.trim(),
     kat: document.getElementById("fKat").value,
-    visits: order ? [{ t: orderDate || today(), apa: order }] : [] });
+    visits: order ? [{ id: Date.now()+1, t: orderDate || today(), apa: order }] : [] });
   save(d);
   document.getElementById("fNama").value = "";
   document.getElementById("fWa").value = "";
   document.getElementById("fOrder").value = "";
   document.getElementById("fOrderDate").value = "";
+  document.getElementById("fOrderCustom").value = "";
+  document.getElementById("fOrderCustom").style.display = "none";
   render();
 }
 function addVisit(id){
@@ -394,7 +402,7 @@ function addVisit(id){
   const tgl = di ? di.value : "";
   if(!tgl){ if(di) di.focus(); return; }
   let apa = ii ? ii.value.trim() : "";
-  if(apa === "__custom") apa = prompt("Tulis nama menu pesanan:") || "";
+  if(apa === "__custom") apa = document.getElementById("vCustom" + id).value.trim();
   if(!apa) return;
   const d = load();
   const c = d.find(x => x.id === id);
@@ -476,7 +484,8 @@ function render(){
       '<div class="recent-orders">' + recent + '</div>' +
       '<div class="vform">' +
       '<input type="date" id="d' + c.id + '" value="' + t + '">' +
-      '<select id="v' + c.id + '"><option value="">Pilih menu</option>' + menuOptions() + '<option value="__custom">Lainnya…</option></select>' +
+      '<select id="v' + c.id + '" onchange="toggleCustom(\'vCustom' + c.id + '\',this.value)"><option value="">Pilih menu</option>' + menuOptions() + '<option value="__custom">Lainnya…</option></select>' +
+      '<input class="span-2 custom-menu" id="vCustom' + c.id + '" placeholder="Nama menu lain" style="display:none">' +
       '<button onclick="addVisit(' + c.id + ')">Catat</button>' +
       '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div></div>';
   }).join("") || "<p class='small'>Belum ada pelanggan.</p>";
@@ -484,8 +493,9 @@ function render(){
 function fillOrderSelects(){
   const base='<option value="">Pilih menu / pesanan pertama (opsional)</option>'+menuOptions()+'<option value="__custom">Lainnya…</option>';
   const add=document.getElementById("fOrder");
-  if(add && !add.dataset.ready){add.innerHTML=base;add.dataset.ready="1";add.addEventListener("change",function(){if(this.value==="__custom"){const x=prompt("Tulis nama menu pesanan:");if(x){const o=new Option(x,x,true,true);this.add(o)}else this.value=""}})}
+  if(add && !add.dataset.ready){add.innerHTML=base;add.dataset.ready="1";add.addEventListener("change",function(){document.getElementById("fOrderCustom").style.display=this.value==="__custom"?"block":"none"})}
 }
+function toggleCustom(id,value){const el=document.getElementById(id);if(el)el.style.display=value==="__custom"?"block":"none"}
 function showHistory(id){
   const c = load().find(x => x.id === id);
   if(!c) return;
@@ -508,8 +518,7 @@ function showHistory(id){
   modal.querySelector(".history-box").addEventListener("touchmove", e => e.stopPropagation(), {passive:true});
 }
 function menuOptions(selected){
-  const items = ["Bolu Pandan","Brownies Kukus","Lapis Pelangi","Putu Ayu","Kue Kering",
-    "Shake Nutrisi","Teh Herbal","Aloe Pendamping"];
+  const items = [...KUE, ...HERBA].map(p => p.nama);
   const known = items.includes(selected);
   return items.map(x => '<option value="' + esc(x) + '"' + (x === selected ? ' selected' : '') + '>' + esc(x) + '</option>').join("") +
     (selected && !known ? '<option value="' + esc(selected) + '" selected>' + esc(selected) + '</option>' : '');
@@ -520,7 +529,7 @@ function editVisit(id,index){
   const modal=document.createElement("div"); modal.className="history-modal"; modal.id="editVisitModal";
   modal.innerHTML='<div class="history-box edit-box"><button class="history-close" onclick="closeEditVisit()">✕</button>'+
     '<h3 class="history-title">Edit pesanan</h3><label>Tanggal</label><input id="editVisitDate" type="date" value="'+esc(v.t)+'">'+
-    '<label>Menu</label><select id="editVisitMenu">'+menuOptions(v.apa)+'</select><input id="editVisitCustom" placeholder="Nama menu lain" style="display:none">'+
+    '<label>Menu</label><select id="editVisitMenu">'+menuOptions(v.apa)+'<option value="__custom">Lainnya…</option></select><input id="editVisitCustom" placeholder="Nama menu lain" style="display:none">'+
     '<button class="login-submit" onclick="saveVisitEdit('+id+','+index+')">Simpan perubahan</button></div>';
   document.body.appendChild(modal); document.body.style.overflow="hidden";
   modal.addEventListener("click",e=>{if(e.target===modal)closeEditVisit()});
@@ -530,10 +539,11 @@ function saveVisitEdit(id,index){
   const c=load().find(x=>x.id===id); if(!c)return;
   if(!c.visits[index])return;
   const date=document.getElementById("editVisitDate").value;
-  const menu=document.getElementById("editVisitMenu").value;
+  let menu=document.getElementById("editVisitMenu").value;
   const custom=document.getElementById("editVisitCustom").value.trim();
-  if(!date||(!menu)||(menu==="__custom"&&!custom))return;
-  c.visits[index]={...c.visits[index],t:date,apa:menu==="__custom"?custom:menu}; save(load()); closeEditVisit(); render();
+  if(menu==="__custom") menu=custom;
+  if(!date||!menu)return;
+  c.visits[index]={...c.visits[index],t:date,apa:menu}; save(load()); closeEditVisit(); render();
 }
 function closeEditVisit(){const m=document.getElementById("editVisitModal");if(m)m.remove();document.body.style.overflow=""}
 function closeHistory(){
