@@ -13,7 +13,8 @@
   <p class="small">Data tersimpan di HP ini saja. PIN contoh: 1234.</p>
 
   <div id="lock">
-    <input id="pin" inputmode="numeric" type="password" placeholder="Masukkan PIN">
+    <input id="pin" inputmode="numeric" type="password" placeholder="Masukkan PIN" autocomplete="off">
+    <div class="small" id="pinErr" style="color:#a00"></div>
     <button onclick="unlock()">Buka</button>
   </div>
 
@@ -30,8 +31,8 @@
 
     <h3>Tambah pelanggan</h3>
     <div class="row">
-      <input id="fNama" placeholder="Nama pelanggan">
-      <input id="fWa" placeholder="No WA (opsional)">
+      <input id="fNama" placeholder="Nama pelanggan" autocomplete="off">
+      <input id="fWa" placeholder="No WA (opsional)" inputmode="tel" autocomplete="off">
     </div>
     <div class="row">
       <select id="fKat">
@@ -43,7 +44,7 @@
     </div>
 
     <h3>Cari pelanggan</h3>
-    <input id="q" placeholder="Ketik nama…" oninput="render()">
+    <input id="q" placeholder="Ketik nama…" oninput="render()" autocomplete="off">
 
     <div id="list"></div>
 
@@ -59,18 +60,29 @@
 
 <script>
 const KEY = "dhaura_customers_v1";
-function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ return []; } }
-function save(d){ localStorage.setItem(KEY, JSON.stringify(d)); }
+let mem = null;
+function load(){
+  try { const v = JSON.parse(localStorage.getItem(KEY)); if(v) return v; } catch(e){}
+  return mem || [];
+}
+function save(d){
+  mem = d;
+  try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e){}
+}
+function today(){ return new Date().toISOString().slice(0,10); }
+function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function unlock(){
   if(document.getElementById("pin").value === "1234"){
     document.getElementById("lock").style.display = "none";
     document.getElementById("main").style.display = "block";
     render();
-  } else alert("PIN salah. Contoh: 1234");
+  } else {
+    document.getElementById("pinErr").textContent = "PIN salah. Contoh: 1234.";
+  }
 }
 function addCust(){
   const nama = document.getElementById("fNama").value.trim();
-  if(!nama){ alert("Isi nama dulu"); return; }
+  if(!nama){ document.getElementById("fNama").focus(); return; }
   const d = load();
   d.unshift({ id: Date.now(), nama, wa: document.getElementById("fWa").value.trim(),
     kat: document.getElementById("fKat").value, visits: [] });
@@ -80,14 +92,19 @@ function addCust(){
   render();
 }
 function addVisit(id){
-  const apa = prompt("Belanja apa hari ini? (contoh: shake + teh)");
-  if(apa === null) return;
+  const inp = document.getElementById("v" + id);
+  const apa = inp ? inp.value.trim() : "";
   const d = load();
   const c = d.find(x => x.id === id);
-  if(c){ c.visits.unshift({ t: new Date().toISOString().slice(0,10), apa: apa || "-" }); save(d); render(); }
+  if(c){ c.visits.unshift({ t: today(), apa: apa || "-" }); save(d); render(); }
 }
-function delCust(id){
-  if(!confirm("Hapus pelanggan ini?")) return;
+function delCust(id, btn){
+  if(!btn.dataset.armed){
+    btn.dataset.armed = "1";
+    btn.textContent = "Ketuk lagi untuk hapus";
+    setTimeout(() => { btn.dataset.armed = ""; btn.textContent = "Hapus"; }, 3000);
+    return;
+  }
   save(load().filter(x => x.id !== id)); render();
 }
 function daysSince(iso){
@@ -105,30 +122,40 @@ function render(){
   const quiet = d.filter(c => daysSince(c.visits[0] && c.visits[0].t) > 14);
   document.getElementById("sQuiet").textContent = quiet.length;
   document.getElementById("nudge").innerHTML = quiet.length
-    ? quiet.slice(0,5).map(c => "• " + c.nama + " — terakhir " + (c.visits[0] ? c.visits[0].t : "belum pernah")).join("<br>")
+    ? quiet.slice(0,5).map(c => "• " + esc(c.nama) + " — terakhir " + (c.visits[0] ? esc(c.visits[0].t) : "belum pernah")).join("<br>")
     : "Semua pelanggan aktif. Bagus.";
   const list = d.filter(c => c.nama.toLowerCase().includes(q));
   document.getElementById("list").innerHTML = list.map(c => {
     const last = c.visits[0] ? c.visits[0].t : "-";
-    const hist = c.visits.slice(0,8).map(v => v.t + " — " + v.apa).join("<br>") || "Belum ada catatan tanggal.";
-    const wa = c.wa ? ' · <a href="https://wa.me/' + c.wa + '" target="_blank" rel="noopener">WA</a>' : '';
-    return '<div class="cust"><div class="nm">' + c.nama + '</div>' +
-      '<div class="small">' + c.kat + ' · terakhir: ' + last + wa + '</div>' +
-      '<div class="row" style="margin-top:8px"><button onclick="addVisit(' + c.id + ')">Catat datang hari ini</button>' +
-      '<button class="secondary" onclick="delCust(' + c.id + ')">Hapus</button></div>' +
+    const hist = c.visits.slice(0,8).map(v => esc(v.t) + " — " + esc(v.apa)).join("<br>") || "Belum ada catatan tanggal.";
+    const wa = c.wa ? ' · <a href="https://wa.me/' + esc(c.wa) + '" target="_blank" rel="noopener">WA</a>' : '';
+    return '<div class="cust"><div class="nm">' + esc(c.nama) + '</div>' +
+      '<div class="small">' + esc(c.kat) + ' · terakhir: ' + esc(last) + wa + '</div>' +
+      '<div class="row" style="margin-top:8px">' +
+      '<input id="v' + c.id + '" placeholder="Belanja apa hari ini?" autocomplete="off">' +
+      '<button onclick="addVisit(' + c.id + ')">Catat datang</button>' +
+      '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div>' +
       '<div class="hist">' + hist + '</div></div>';
   }).join("") || "<p class='small'>Belum ada pelanggan.</p>";
 }
 function exportJson(){
-  const blob = new Blob([localStorage.getItem(KEY) || "[]"], {type:"application/json"});
+  const blob = new Blob([JSON.stringify(load())], {type:"application/json"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob); a.download = "dhaura-cadangan.json"; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 function importJson(el){
   const f = el.files[0]; if(!f) return;
   const r = new FileReader();
-  r.onload = () => { try { const d = JSON.parse(r.result); if(Array.isArray(d)){ save(d); render(); alert("Dipulihkan."); } } catch(e){ alert("Berkas tidak valid."); } };
+  r.onload = () => { try { const d = JSON.parse(r.result); if(Array.isArray(d)){ save(d); render(); } } catch(e){} el.value = ""; };
   r.readAsText(f);
+}
+// Mode pratinjau: dilewati di pemakaian asli.
+if(typeof AUTOLOGIN !== "undefined" && AUTOLOGIN){
+  document.getElementById("lock").style.display = "none";
+  document.getElementById("main").style.display = "block";
+  if(typeof DEMO !== "undefined" && DEMO && !load().length) mem = DEMO;
+  render();
 }
 </script>
 </body>

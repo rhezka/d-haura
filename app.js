@@ -21,7 +21,7 @@ function waLink(nama){
   return "https://wa.me/" + WA_NUMBER + "?text=" + t;
 }
 function card(p){
-  const stamp = p.halal ? '<span class="stamp">HALAL</span>' : '';
+  const stamp = p.halal ? '<img class="stamp" src="img/halal-indonesia.svg" alt="Halal Indonesia">' : '';
   return '<div class="card">' +
     '<div class="imgwrap"><img loading="lazy" src="' + p.img + '" alt="' + p.nama + '" onerror="this.style.display=\'none\'">' + stamp + '</div>' +
     '<div class="pad"><div class="name">' + p.nama + '</div>' +
