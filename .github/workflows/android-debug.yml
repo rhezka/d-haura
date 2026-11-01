@@ -30,11 +30,10 @@ jobs:
         with:
           node-version: '20'
           cache: npm
-      - uses: android-actions/setup-android@v3
       - run: npm ci
       - run: mkdir -p www && cp index.html admin.html app.js style.css www/ && cp -r img www/ && npx cap sync android
       - name: Build debug APK
-        run: cd android && chmod +x gradlew && ./gradlew assembleDebug
+        run: cd android && chmod +x gradlew && ./gradlew --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: dhaura-debug-apk
