@@ -2,13 +2,17 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>D'Haura — Admin</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<nav class="appnav native-only" id="nativeNav" aria-label="Navigasi aplikasi">
+  <a class="native-tab" href="index.html">Katalog</a>
+  <a class="native-tab active" href="admin.html">Admin</a>
+</nav>
+<div class="native-nav-space" id="nativeNavSpace"></div>
 <div class="wrap">
-  <p class="admin-back"><a href="index.html">← Kembali ke katalog</a></p>
   <div id="lock" class="login-card">
     <h2 class="login-heading">Masuk ke D’Haura</h2>
     <p class="login-sub">Kelola pelanggan dan pesanan toko.</p>
@@ -71,6 +75,7 @@
 
 <script src="app.js"></script>
 <script>
+initNativeNavigation();
 const KEY = "dhaura_customers_v1";
 const AKEY = "dhaura_auth";
 const USER = "nur";   // contoh sementara

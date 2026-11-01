@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>D'Haura — Kue & Nutrisi</title>
 <style>:root { --bg:#f4f8f1; --ink:#283b2e; --card:#ffffff; --line:#dce8d8; --acc:#4f805b; }
 * { box-sizing:border-box; }
@@ -98,6 +98,14 @@ button.secondary { background:#6c757d; }
   background:linear-gradient(125deg,#e4f1df 0%,#f7fbf4 52%,#e7f2e4 100%);
   border-bottom:1px solid #cfe0ca;
   box-shadow:0 5px 18px rgba(44,77,49,.16); }
+.native-only { display:none; }
+.native-nav-space { height:0; }
+.native-tab { display:flex; align-items:center; justify-content:center; flex:1;
+  min-height:48px; padding:12px; border-radius:14px; text-decoration:none;
+  font-weight:800; font-size:16px; color:#52755a;
+  background:#d4e9cf; border:1px solid #a9caa5; }
+.native-tab.active { color:#fff; border-color:transparent;
+  background:linear-gradient(135deg,#467d53,#6b9a70); box-shadow:0 2px 5px rgba(44,77,49,.16); }
 .navrow { display:flex; gap:8px; }
 .navrow button { flex:1; padding:14px; font-size:16px; border-radius:14px;
   box-shadow:0 2px 5px rgba(74,45,32,.12); }
@@ -152,12 +160,17 @@ button.secondary { background:#6c757d; }
 </style>
 </head>
 <body>
+<nav class="appnav native-only" id="nativeNav" aria-label="Navigasi aplikasi">
+  <a class="native-tab active" href="index.html">Katalog</a>
+  <a class="native-tab" href="admin.html">Admin</a>
+</nav>
+<div class="native-nav-space" id="nativeNavSpace"></div>
 <header class="top">
   <h1 class="brand">d’haura</h1>
   <div class="established"><span></span> EST. 2024 <span></span></div>
   <div class="tag">Kue & nutrisi harian</div>
   <div class="actions">
-    <a class="btn" id="waOrder" href="https://wa.me/6280000000000?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
+    <a class="btn" id="waOrder" href="https://wa.me/6285245230101?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
     <a class="btn ghost" href="admin.html">Admin</a>
   </div>
 </header>
@@ -234,6 +247,16 @@ const HERBA = [
     desc:"Minuman aloe untuk pendamping program harian." },
 ];
 
+// APK only: native bottom? top navigation stays visible while page content scrolls.
+function initNativeNavigation(){
+  const native = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
+  const nav=document.getElementById("nativeNav"), space=document.getElementById("nativeNavSpace");
+  if(!native||!nav||!space) return;
+  nav.style.display="flex";
+  const size=()=>{space.style.height=nav.offsetHeight+"px"};
+  size(); window.addEventListener("resize",size);
+}
+
 function rupiah(n){ if(!n) return "Tanya via WA"; return "Rp " + n.toLocaleString("id-ID"); }
 function waLink(nama){
   const t = encodeURIComponent("Halo D'Haura, saya mau tanya " + nama);
@@ -284,6 +307,7 @@ function renderPublic(){
 }
 </script>
 <script>
+  initNativeNavigation();
   renderPublic();
 </script>
 </body>

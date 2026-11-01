@@ -2,17 +2,22 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>D'Haura — Kue & Nutrisi</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<nav class="appnav native-only" id="nativeNav" aria-label="Navigasi aplikasi">
+  <a class="native-tab active" href="index.html">Katalog</a>
+  <a class="native-tab" href="admin.html">Admin</a>
+</nav>
+<div class="native-nav-space" id="nativeNavSpace"></div>
 <header class="top">
   <h1 class="brand">d’haura</h1>
   <div class="established"><span></span> EST. 2024 <span></span></div>
   <div class="tag">Kue & nutrisi harian</div>
   <div class="actions">
-    <a class="btn" id="waOrder" href="https://wa.me/6280000000000?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
+    <a class="btn" id="waOrder" href="https://wa.me/6285245230101?text=Halo%20D%27Haura%2C%20saya%20mau%20tanya-tanya%20dulu" target="_blank" rel="noopener">Pesan via WA</a>
     <a class="btn ghost" href="admin.html">Admin</a>
   </div>
 </header>
@@ -45,6 +50,7 @@
 
 <script src="app.js"></script>
 <script>
+  initNativeNavigation();
   renderPublic();
 </script>
 </body>

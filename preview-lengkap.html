@@ -92,6 +92,14 @@ button.secondary { background:#6c757d; }
   background:linear-gradient(125deg,#e4f1df 0%,#f7fbf4 52%,#e7f2e4 100%);
   border-bottom:1px solid #cfe0ca;
   box-shadow:0 5px 18px rgba(44,77,49,.16); }
+.native-only { display:none; }
+.native-nav-space { height:0; }
+.native-tab { display:flex; align-items:center; justify-content:center; flex:1;
+  min-height:48px; padding:12px; border-radius:14px; text-decoration:none;
+  font-weight:800; font-size:16px; color:#52755a;
+  background:#d4e9cf; border:1px solid #a9caa5; }
+.native-tab.active { color:#fff; border-color:transparent;
+  background:linear-gradient(135deg,#467d53,#6b9a70); box-shadow:0 2px 5px rgba(44,77,49,.16); }
 .navrow { display:flex; gap:8px; }
 .navrow button { flex:1; padding:14px; font-size:16px; border-radius:14px;
   box-shadow:0 2px 5px rgba(74,45,32,.12); }
@@ -143,7 +151,12 @@ button.secondary { background:#6c757d; }
 .history-order { color:#31563a; font-size:14px; line-height:1.45; }
 .appnav button { flex:1; }
 .appnav .navrow button.off { background:#d4e9cf !important; color:#31563a !important; border:1px solid #a9caa5 !important; box-shadow:none !important; }
-</style></head><body><div class="appnav"><div class="navrow"><button id="navK" onclick="switchView('K')">Katalog</button><button id="navA" class="off" onclick="switchView('A')">Admin</button></div></div><div id="appspace"></div><div id="viewK">
+</style></head><body><div id="viewK">
+<nav class="appnav native-only" id="nativeNav" aria-label="Navigasi aplikasi">
+  <a class="native-tab active" href="index.html">Katalog</a>
+  <a class="native-tab" href="admin.html">Admin</a>
+</nav>
+<div class="native-nav-space" id="nativeNavSpace"></div>
 <header class="top">
   <h1 class="brand">d’haura</h1>
   <div class="established"><span></span> EST. 2024 <span></span></div>
@@ -178,9 +191,13 @@ button.secondary { background:#6c757d; }
 
 <script src="app.js"></script>
 
-</div><div id="viewA" style="display:none">
+</div><div id="viewA">
+<nav class="appnav native-only" id="nativeNav" aria-label="Navigasi aplikasi">
+  <a class="native-tab" href="index.html">Katalog</a>
+  <a class="native-tab active" href="admin.html">Admin</a>
+</nav>
+<div class="native-nav-space" id="nativeNavSpace"></div>
 <div class="wrap">
-  <p class="admin-back"><a href="#" onclick="switchView('K');return false">← Kembali ke katalog</a></p>
   <div id="lock" class="login-card">
     <h2 class="login-heading">Masuk ke D’Haura</h2>
     <p class="login-sub">Kelola pelanggan dan pesanan toko.</p>
@@ -289,6 +306,16 @@ const HERBA = [
     desc:"Minuman aloe untuk pendamping program harian." },
 ];
 
+// APK only: native bottom? top navigation stays visible while page content scrolls.
+function initNativeNavigation(){
+  const native = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
+  const nav=document.getElementById("nativeNav"), space=document.getElementById("nativeNavSpace");
+  if(!native||!nav||!space) return;
+  nav.style.display="flex";
+  const size=()=>{space.style.height=nav.offsetHeight+"px"};
+  size(); window.addEventListener("resize",size);
+}
+
 function rupiah(n){ if(!n) return "Tanya via WA"; return "Rp " + n.toLocaleString("id-ID"); }
 function waLink(nama){
   const t = encodeURIComponent("Halo D'Haura, saya mau tanya " + nama);
@@ -338,6 +365,7 @@ function renderPublic(){
   if(wo) wo.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent("Halo D'Haura, saya mau tanya-tanya dulu");
 }
 </script><script>var AUTOLOGIN=false;function dAgo(n){var d=new Date(Date.now()-n*86400000);return d.toISOString().slice(0,10)}var DEMO=[{id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[[1,"Shake Nutrisi"],[4,"Teh Herbal"],[8,"Aloe Pendamping"],[12,"Shake Nutrisi"],[18,"Teh Herbal"],[25,"Shake Nutrisi"]]},{id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[[2,"Bolu Pandan"],[9,"Shake Nutrisi"],[16,"Brownies Kukus"],[23,"Teh Herbal"]]},{id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[[0,"Brownies Kukus"],[3,"Putu Ayu"],[7,"Kue Kering"],[11,"Bolu Pandan"],[19,"Lapis Pelangi"],[28,"Brownies Kukus"]]},{id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[[20,"Lapis Pelangi"],[34,"Putu Ayu"],[48,"Bolu Pandan"]]},{id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[[30,"Shake Nutrisi"],[40,"Teh Herbal"]]},{id:6,nama:"Bu Lina",wa:"",kat:"Campur",visits:[[1,"Aloe Pendamping"],[5,"Bolu Pandan"],[13,"Shake Nutrisi"]]},{id:7,nama:"Mbak Rina",wa:"",kat:"Herbalife",visits:[[6,"Teh Herbal"],[14,"Shake Nutrisi"],[21,"Aloe Pendamping"]]},{id:8,nama:"Pak Joko",wa:"",kat:"Kue",visits:[[4,"Kue Kering"],[10,"Bolu Pandan"]]},{id:9,nama:"Bu Maya",wa:"",kat:"Campur",visits:[[3,"Putu Ayu"],[8,"Shake Nutrisi"],[15,"Brownies Kukus"],[22,"Teh Herbal"]]},{id:10,nama:"Mbak Tuti",wa:"",kat:"Kue",visits:[[17,"Lapis Pelangi"],[29,"Kue Kering"]]},{id:11,nama:"Bu Nia",wa:"",kat:"Herbalife",visits:[[2,"Shake Nutrisi"],[9,"Aloe Pendamping"],[16,"Teh Herbal"]]},{id:12,nama:"Pak Rahmat",wa:"",kat:"Campur",visits:[[0,"Bolu Pandan"],[7,"Teh Herbal"],[20,"Brownies Kukus"]]}].map(c=>({...c,visits:c.visits.map(([n,apa],i)=>({id:c.id*100+i,t:dAgo(n),apa}))}));</script><script>
+initNativeNavigation();
 const KEY = "dhaura_customers_v1";
 const AKEY = "dhaura_auth";
 const USER = "nur";   // contoh sementara
@@ -602,4 +630,4 @@ if(auto){
   render();
 }
 
-function switchView(w){var k=w==='K';document.getElementById('viewK').style.display=k?'block':'none';document.getElementById('viewA').style.display=k?'none':'block';document.getElementById('navK').className=k?'':'off';document.getElementById('navA').className=k?'off':'';window.scrollTo(0,0)}function fitSpace(){var n=document.querySelector('.appnav'),s=document.getElementById('appspace');if(n&&s)s.style.height=n.offsetHeight+'px'}window.addEventListener('resize',fitSpace);renderPublic();fitSpace();</script></body></html>
+renderPublic();</script></body></html>

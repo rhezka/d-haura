@@ -44,6 +44,16 @@ const HERBA = [
     desc:"Minuman aloe untuk pendamping program harian." },
 ];
 
+// APK only: native bottom? top navigation stays visible while page content scrolls.
+function initNativeNavigation(){
+  const native = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
+  const nav=document.getElementById("nativeNav"), space=document.getElementById("nativeNavSpace");
+  if(!native||!nav||!space) return;
+  nav.style.display="flex";
+  const size=()=>{space.style.height=nav.offsetHeight+"px"};
+  size(); window.addEventListener("resize",size);
+}
+
 function rupiah(n){ if(!n) return "Tanya via WA"; return "Rp " + n.toLocaleString("id-ID"); }
 function waLink(nama){
   const t = encodeURIComponent("Halo D'Haura, saya mau tanya " + nama);
