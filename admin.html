@@ -215,14 +215,14 @@ function importJson(el){
   r.onload = () => { try { const d = JSON.parse(r.result); if(Array.isArray(d)){ save(d); render(); } } catch(e){} el.value = ""; };
   r.readAsText(f);
 }
-// Mode pratinjau: dilewati di pemakaian asli.
+// Mode pratinjau: data contoh dimuat, login tetap berlaku.
+if(typeof DEMO !== "undefined" && DEMO && !load().length) mem = DEMO;
 let auto = false;
 try { auto = sessionStorage.getItem(AKEY) === "1"; } catch(e){}
 if(typeof AUTOLOGIN !== "undefined" && AUTOLOGIN) auto = true;
 if(auto){
   logged = true;
   showMain();
-  if(typeof DEMO !== "undefined" && DEMO && !load().length) mem = DEMO;
   render();
 }
 </script>
