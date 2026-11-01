@@ -96,7 +96,7 @@ button.secondary { background:#6c757d; }
 .navrow button { flex:1; padding:14px; font-size:16px; border-radius:14px;
   box-shadow:0 2px 5px rgba(74,45,32,.12); }
 .navrow button:not(.off) { background:linear-gradient(135deg,#467d53,#6b9a70); }
-.navrow button.off { background:linear-gradient(135deg,#f5faf2,#e8f2e4); color:#52755a; border:1px solid #cfe0ca; box-shadow:none; }
+.navrow button.off { background:#d4e9cf !important; color:#31563a !important; border:1px solid #a9caa5 !important; box-shadow:none !important; }
 .appspace { height:0; }
 .admin-title { margin-top:0; }
 .wrap { padding-top:34px; }
@@ -138,4 +138,4 @@ button.secondary { background:#6c757d; }
 .history-date { color:#4f805b; font-weight:700; font-size:14px; line-height:1.45; font-variant-numeric:tabular-nums; }
 .history-order { color:#31563a; font-size:14px; line-height:1.45; }
 .appnav button { flex:1; }
-.appnav .navrow button.off { background:#edf5e9; color:#52755a; border:1px solid #cfe0ca; box-shadow:none; }
+.appnav .navrow button.off { background:#d4e9cf !important; color:#31563a !important; border:1px solid #a9caa5 !important; box-shadow:none !important; }
