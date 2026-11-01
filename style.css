@@ -72,6 +72,5 @@ button.secondary { background:#6c757d; }
   box-shadow:0 2px 10px rgba(0,0,0,.12); }
 .navrow { display:flex; gap:8px; }
 .navrow button { flex:1; padding:15px 14px; font-size:16px; }
-.vtag { font-size:10px; color:#bbb; text-align:right; }
 .appnav button { flex:1; }
 .appnav button.off { background:#6c757d; }
