@@ -1,4 +1,4 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>D'Haura — Pratinjau</title><style>:root { --bg:#f4f8f1; --ink:#283b2e; --card:#ffffff; --line:#dce8d8; --acc:#4f805b; }
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>D'Haura</title><style>:root { --bg:#f4f8f1; --ink:#283b2e; --card:#ffffff; --line:#dce8d8; --acc:#4f805b; }
 * { box-sizing:border-box; }
 body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--ink); }
 .top { position:relative; isolation:isolate; overflow:hidden; padding:28px 18px 24px; text-align:center;
@@ -128,7 +128,7 @@ button.secondary { background:#6c757d; }
 .history-date { color:#4f805b; font-weight:700; font-size:14px; line-height:1.45; font-variant-numeric:tabular-nums; }
 .history-order { color:#31563a; font-size:14px; line-height:1.45; }
 .appnav button { flex:1; }
-.appnav button.off { background:#6c757d; }
+.appnav .navrow button.off { background:#edf5e9; color:#52755a; border:1px solid #cfe0ca; box-shadow:none; }
 </style></head><body><div class="appnav"><div class="navrow"><button id="navK" onclick="switchView('K')">Katalog</button><button id="navA" class="off" onclick="switchView('A')">Admin</button></div></div><div id="appspace"></div><div id="viewK">
 <header class="top">
   <h1 class="brand">d’haura</h1>
@@ -322,7 +322,7 @@ function renderPublic(){
   const wo = document.getElementById("waOrder");
   if(wo) wo.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent("Halo D'Haura, saya mau tanya-tanya dulu");
 }
-</script><script>var AUTOLOGIN=false;function dAgo(n){var d=new Date(Date.now()-n*86400000);return d.toISOString().slice(0,10)}var DEMO=[{id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[{t:dAgo(1),apa:"shake + teh"},{t:dAgo(4),apa:"shake"}]},{id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[{t:dAgo(2),apa:"bolu pandan"}]},{id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[{t:dAgo(0),apa:"brownies kukus"}]},{id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[{t:dAgo(20),apa:"lapis pelangi"}]},{id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[{t:dAgo(30),apa:"shake"}]}];</script><script>
+</script><script>var AUTOLOGIN=false;function dAgo(n){var d=new Date(Date.now()-n*86400000);return d.toISOString().slice(0,10)}var DEMO=[{id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[{t:dAgo(1),apa:"shake + teh"}]},{id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[{t:dAgo(2),apa:"bolu pandan"}]},{id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[{t:dAgo(0),apa:"brownies kukus"}]},{id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[{t:dAgo(20),apa:"lapis pelangi"}]},{id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[{t:dAgo(30),apa:"shake"}]}];</script><script>
 const KEY = "dhaura_customers_v1";
 const AKEY = "dhaura_auth";
 const USER = "nur";   // contoh sementara
