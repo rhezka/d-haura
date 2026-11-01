@@ -128,8 +128,14 @@ button.secondary { background:#6c757d; }
 .history-meta { color:#66806a; font-size:13px; margin-bottom:16px; }
 .history-close { position:absolute; right:14px; top:14px; border-radius:50%;
   width:38px; height:38px; padding:0; background:#f0dfce; color:#4a2d20; }
-.history-item { display:grid; grid-template-columns:100px 1fr; gap:10px;
+.history-item { display:grid; grid-template-columns:minmax(112px, 128px) minmax(0,1fr); gap:10px;
   align-items:start; padding:12px 0; border-top:1px solid #dce8d8; }
+.history-date { white-space:nowrap; font-size:13px; }
+.history-order { display:flex; align-items:start; gap:8px; justify-content:space-between; }
+.edit-order { flex:0 0 auto; width:30px; height:30px; padding:0; margin:-4px 0 0;
+  border-radius:9px; background:#e8f1e3; color:#467d53; font-size:18px; }
+.edit-box label { display:block; margin:12px 0 4px; color:#52755a; font-size:13px; font-weight:700; }
+.edit-box input,.edit-box select { margin:0 0 8px; }
 .history-box .history-item:nth-child(even) { background:#f1f7ed; }
 .history-date { color:#4f805b; font-weight:700; font-size:14px; line-height:1.45; font-variant-numeric:tabular-nums; }
 .history-order { color:#31563a; font-size:14px; line-height:1.45; }
@@ -151,13 +157,11 @@ button.secondary { background:#6c757d; }
 <main>
   <section>
     <h2>Kue</h2>
-    <p class="sub">Ketuk foto untuk melihat detail.</p>
     <div class="grid" id="kueGrid"></div>
   </section>
 
   <section>
     <h2>Herbalife</h2>
-    <p class="sub">Ketuk foto untuk melihat detail.</p>
     <div class="grid" id="herbaGrid"></div>
   </section>
 

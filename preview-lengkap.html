@@ -122,8 +122,14 @@ button.secondary { background:#6c757d; }
 .history-meta { color:#66806a; font-size:13px; margin-bottom:16px; }
 .history-close { position:absolute; right:14px; top:14px; border-radius:50%;
   width:38px; height:38px; padding:0; background:#f0dfce; color:#4a2d20; }
-.history-item { display:grid; grid-template-columns:100px 1fr; gap:10px;
+.history-item { display:grid; grid-template-columns:minmax(112px, 128px) minmax(0,1fr); gap:10px;
   align-items:start; padding:12px 0; border-top:1px solid #dce8d8; }
+.history-date { white-space:nowrap; font-size:13px; }
+.history-order { display:flex; align-items:start; gap:8px; justify-content:space-between; }
+.edit-order { flex:0 0 auto; width:30px; height:30px; padding:0; margin:-4px 0 0;
+  border-radius:9px; background:#e8f1e3; color:#467d53; font-size:18px; }
+.edit-box label { display:block; margin:12px 0 4px; color:#52755a; font-size:13px; font-weight:700; }
+.edit-box input,.edit-box select { margin:0 0 8px; }
 .history-box .history-item:nth-child(even) { background:#f1f7ed; }
 .history-date { color:#4f805b; font-weight:700; font-size:14px; line-height:1.45; font-variant-numeric:tabular-nums; }
 .history-order { color:#31563a; font-size:14px; line-height:1.45; }
@@ -139,13 +145,11 @@ button.secondary { background:#6c757d; }
 <main>
   <section>
     <h2>Kue</h2>
-    <p class="sub">Ketuk foto untuk melihat detail.</p>
     <div class="grid" id="kueGrid"></div>
   </section>
 
   <section>
     <h2>Herbalife</h2>
-    <p class="sub">Ketuk foto untuk melihat detail.</p>
     <div class="grid" id="herbaGrid"></div>
   </section>
 
@@ -208,7 +212,7 @@ button.secondary { background:#6c757d; }
         <option value="Campur">Campur</option>
       </select>
       <input id="fOrderDate" type="date" aria-label="Tanggal pesanan">
-      <input id="fOrder" class="span-2" placeholder="Menu / pesanan pertama (opsional)" autocomplete="off">
+      <select id="fOrder" class="span-2"><option value="">Pilih menu / pesanan pertama (opsional)</option></select>
       <button class="span-2" onclick="addCust()">Simpan pelanggan</button>
     </div>
 
@@ -367,7 +371,8 @@ function addCust(){
   const nama = document.getElementById("fNama").value.trim();
   if(!nama){ document.getElementById("fNama").focus(); return; }
   const d = load();
-  const order = document.getElementById("fOrder").value.trim();
+  let order = document.getElementById("fOrder").value.trim();
+  if(order === "__custom") order = prompt("Tulis nama menu pesanan:") || "";
   const orderDate = document.getElementById("fOrderDate").value;
   d.unshift({ id: Date.now(), nama, wa: document.getElementById("fWa").value.trim(),
     kat: document.getElementById("fKat").value,
@@ -384,10 +389,12 @@ function addVisit(id){
   const ii = document.getElementById("v" + id);
   const tgl = di ? di.value : "";
   if(!tgl){ if(di) di.focus(); return; }
-  const apa = ii ? ii.value.trim() : "";
+  let apa = ii ? ii.value.trim() : "";
+  if(apa === "__custom") apa = prompt("Tulis nama menu pesanan:") || "";
+  if(!apa) return;
   const d = load();
   const c = d.find(x => x.id === id);
-  if(c){ c.visits.unshift({ t: tgl, apa: apa || "-" }); save(d); render(); }
+  if(c){ c.visits.unshift({ id: Date.now(), t: tgl, apa: apa }); save(d); render(); }
 }
 function delCust(id, btn){
   if(!btn.dataset.armed){
@@ -433,6 +440,7 @@ function chartKat(){
   }).join("");
 }
 function render(){
+  fillOrderSelects();
   const d = load();
   const q = (document.getElementById("q").value || "").toLowerCase();
   const now = Date.now();
@@ -450,8 +458,9 @@ function render(){
   const t = today();
   const list = d.filter(c => c.nama.toLowerCase().includes(q));
   document.getElementById("list").innerHTML = list.map(c => {
-    const recent = c.visits.slice(0,5).map(v =>
-      '<div class="history-item"><div class="history-date">' + esc(v.t) + '</div><div class="history-order">' + esc(v.apa || "-") + '</div></div>'
+    const recent = c.visits.slice(0,5).map((v,i) =>
+      '<div class="history-item"><div class="history-date">' + esc(v.t) + '</div><div class="history-order">' + esc(v.apa || "-") +
+      '<button class="edit-order" title="Edit pesanan" aria-label="Edit pesanan" onclick="editVisit(' + c.id + ',' + i + ')">✎</button></div></div>'
     ).join("") || '<div class="small">Belum ada pesanan tercatat.</div>';
     const wa = c.wa ? ' · <a href="https://wa.me/' + esc(c.wa) + '" target="_blank" rel="noopener">WA</a>' : '';
     return '<div class="cust"><button class="cust-name" onclick="showHistory(' + c.id + ')">' + esc(c.nama) + ' <span>↗</span></button>' +
@@ -459,10 +468,15 @@ function render(){
       '<div class="recent-orders">' + recent + '</div>' +
       '<div class="vform">' +
       '<input type="date" id="d' + c.id + '" value="' + t + '">' +
-      '<input id="v' + c.id + '" placeholder="Belanja apa?" autocomplete="off">' +
+      '<select id="v' + c.id + '"><option value="">Pilih menu</option>' + menuOptions() + '<option value="__custom">Lainnya…</option></select>' +
       '<button onclick="addVisit(' + c.id + ')">Catat</button>' +
       '<button class="secondary" onclick="delCust(' + c.id + ',this)">Hapus</button></div></div>';
   }).join("") || "<p class='small'>Belum ada pelanggan.</p>";
+}
+function fillOrderSelects(){
+  const base='<option value="">Pilih menu / pesanan pertama (opsional)</option>'+menuOptions()+'<option value="__custom">Lainnya…</option>';
+  const add=document.getElementById("fOrder");
+  if(add && !add.dataset.ready){add.innerHTML=base;add.dataset.ready="1";add.addEventListener("change",function(){if(this.value==="__custom"){const x=prompt("Tulis nama menu pesanan:");if(x){const o=new Option(x,x,true,true);this.add(o)}else this.value=""}})}
 }
 function showHistory(id){
   const c = load().find(x => x.id === id);
@@ -485,6 +499,35 @@ function showHistory(id){
   document.body.style.overflow = "hidden";
   modal.querySelector(".history-box").addEventListener("touchmove", e => e.stopPropagation(), {passive:true});
 }
+function menuOptions(selected){
+  const items = ["Bolu Pandan","Brownies Kukus","Lapis Pelangi","Putu Ayu","Kue Kering",
+    "Shake Nutrisi","Teh Herbal","Aloe Pendamping"];
+  const known = items.includes(selected);
+  return items.map(x => '<option value="' + esc(x) + '"' + (x === selected ? ' selected' : '') + '>' + esc(x) + '</option>').join("") +
+    (selected && !known ? '<option value="' + esc(selected) + '" selected>' + esc(selected) + '</option>' : '');
+}
+function editVisit(id,index){
+  const c=load().find(x=>x.id===id); if(!c||!c.visits[index]) return;
+    const v=c.visits[index]; if(!v) return;
+  const modal=document.createElement("div"); modal.className="history-modal"; modal.id="editVisitModal";
+  modal.innerHTML='<div class="history-box edit-box"><button class="history-close" onclick="closeEditVisit()">✕</button>'+
+    '<h3 class="history-title">Edit pesanan</h3><label>Tanggal</label><input id="editVisitDate" type="date" value="'+esc(v.t)+'">'+
+    '<label>Menu</label><select id="editVisitMenu">'+menuOptions(v.apa)+'</select><input id="editVisitCustom" placeholder="Nama menu lain" style="display:none">'+
+    '<button class="login-submit" onclick="saveVisitEdit('+id+','+index+')">Simpan perubahan</button></div>';
+  document.body.appendChild(modal); document.body.style.overflow="hidden";
+  modal.addEventListener("click",e=>{if(e.target===modal)closeEditVisit()});
+  document.getElementById("editVisitMenu").addEventListener("change",function(){document.getElementById("editVisitCustom").style.display=this.value==="__custom"?"block":"none"});
+}
+function saveVisitEdit(id,index){
+  const c=load().find(x=>x.id===id); if(!c)return;
+  if(!c.visits[index])return;
+  const date=document.getElementById("editVisitDate").value;
+  const menu=document.getElementById("editVisitMenu").value;
+  const custom=document.getElementById("editVisitCustom").value.trim();
+  if(!date||(!menu)||(menu==="__custom"&&!custom))return;
+  c.visits[index]={...c.visits[index],t:date,apa:menu==="__custom"?custom:menu}; save(load()); closeEditVisit(); render();
+}
+function closeEditVisit(){const m=document.getElementById("editVisitModal");if(m)m.remove();document.body.style.overflow=""}
 function closeHistory(){
   const modal = document.getElementById("historyModal");
   if(modal) modal.remove();
