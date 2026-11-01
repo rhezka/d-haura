@@ -1,5 +1,13 @@
 # CHANGELOG d-haura
 
+## 2026-11-02 — APK-only navigation visibility fix
+- Tier: 1
+- Backup: `git` prior state at commit `5adea34`.
+- Perubahan: tambah `apk-only.css`, hanya digabung ke `www/style.css` oleh workflow APK; tab Katalog/Admin dipaksa tampil fixed di atas dan area spacer tetap disediakan. Web (`style.css`, HTML publik) tidak disentuh oleh override APK.
+- Verifikasi: akan diverifikasi dengan build GitHub Actions dan inspeksi hasil APK.
+- Data pengguna terpengaruh: TIDAK.
+- Rollback: `git revert <commit>`.
+
 ## 2026-11-02 — Data contoh Sheets + kerangka build APK
 - Tier: 1 (kode) + data dummy baru di Sheet atas persetujuan user.
 - Backup: Google Sheets disalin ke `1e7wcNC83DNGRBOIykotSBb64Fm4afmnz-sxDbJR7tNw`; kode sebelum perubahan di git commit `206b1ad`.
