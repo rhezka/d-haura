@@ -8,6 +8,7 @@
 </head>
 <body>
 <div class="wrap">
+  <p class="admin-back"><a href="index.html">← Kembali ke katalog</a></p>
   <div id="lock" class="login-card">
     <h2 class="login-heading">Masuk ke D’Haura</h2>
     <p class="login-sub">Kelola pelanggan dan pesanan toko.</p>
@@ -21,7 +22,6 @@
   </div>
 
   <div id="main" style="display:none">
-    <button class="logout-icon" onclick="logout()" title="Keluar" aria-label="Keluar">⏻</button>
     <div class="dash">
       <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Pelanggan tercatat</div></div>
       <div class="stat"><div class="n" id="sWeek">0</div><div class="l">Datang 7 hari terakhir</div></div>
@@ -65,6 +65,7 @@
       <input id="imp" type="file" accept="application/json" style="display:none" onchange="importJson(this)">
     </div>
     <p class="small">Kalau ganti HP, unduh cadangan di HP lama lalu pulihkan di HP baru.</p>
+    <button class="logout-bottom" onclick="logout()">Keluar</button>
   </div>
 </div>
 

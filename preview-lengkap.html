@@ -100,10 +100,10 @@ button.secondary { background:#6c757d; }
 .appspace { height:0; }
 .admin-title { margin-top:0; }
 .wrap { padding-top:34px; }
-.logout-icon { position:fixed; top:calc(env(safe-area-inset-top, 0px) + 78px); right:16px;
-  z-index:20; width:42px; height:42px; padding:0; border-radius:50%;
-  color:#4f805b; background:#edf5e9; border:1px solid #cfe0ca;
-  font-size:22px; line-height:1; box-shadow:0 3px 10px rgba(44,77,49,.12); }
+.admin-back { margin:0 0 12px; }
+.admin-back a { color:#4f805b; font-weight:700; text-decoration:none; }
+.logout-bottom { width:100%; margin:20px 0 8px; color:#31563a;
+  background:#edf5e9; border:1px solid #cfe0ca; }
 .login-card { max-width:440px; margin:18px auto; padding:22px;
   border:1px solid #d4e4d0; border-radius:20px;
   background:linear-gradient(145deg,#fff 0%,#f1f7ed 100%);
@@ -180,6 +180,7 @@ button.secondary { background:#6c757d; }
 
 </div><div id="viewA" style="display:none">
 <div class="wrap">
+  <p class="admin-back"><a href="#" onclick="switchView('K');return false">← Kembali ke katalog</a></p>
   <div id="lock" class="login-card">
     <h2 class="login-heading">Masuk ke D’Haura</h2>
     <p class="login-sub">Kelola pelanggan dan pesanan toko.</p>
@@ -193,7 +194,6 @@ button.secondary { background:#6c757d; }
   </div>
 
   <div id="main" style="display:none">
-    <button class="logout-icon" onclick="logout()" title="Keluar" aria-label="Keluar">⏻</button>
     <div class="dash">
       <div class="stat"><div class="n" id="sTotal">0</div><div class="l">Pelanggan tercatat</div></div>
       <div class="stat"><div class="n" id="sWeek">0</div><div class="l">Datang 7 hari terakhir</div></div>
@@ -237,13 +237,14 @@ button.secondary { background:#6c757d; }
       <input id="imp" type="file" accept="application/json" style="display:none" onchange="importJson(this)">
     </div>
     <p class="small">Kalau ganti HP, unduh cadangan di HP lama lalu pulihkan di HP baru.</p>
+    <button class="logout-bottom" onclick="logout()">Keluar</button>
   </div>
 </div>
 
 
 
 </div><script>// Data final (struktur). Foto, nama, dan harga menyusul data asli.
-const WA_NUMBER = "6280000000000"; // GANTI nomor WA
+const WA_NUMBER = "6285245230101";
 
 const U = (id) => "https://images.unsplash.com/" + id + "?w=600&q=80";
 const IMG = {
@@ -336,16 +337,34 @@ function renderPublic(){
   const wo = document.getElementById("waOrder");
   if(wo) wo.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent("Halo D'Haura, saya mau tanya-tanya dulu");
 }
-</script><script>var AUTOLOGIN=false;function dAgo(n){var d=new Date(Date.now()-n*86400000);return d.toISOString().slice(0,10)}var DEMO=[{id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[{t:dAgo(1),apa:"Shake Nutrisi"},{t:dAgo(4),apa:"Teh Herbal"},{t:dAgo(8),apa:"Aloe Pendamping"},{t:dAgo(12),apa:"Shake Nutrisi"},{t:dAgo(18),apa:"Teh Herbal"},{t:dAgo(25),apa:"Shake Nutrisi"}]},{id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[{t:dAgo(2),apa:"Bolu Pandan"},{t:dAgo(9),apa:"Shake Nutrisi"},{t:dAgo(16),apa:"Brownies Kukus"},{t:dAgo(23),apa:"Teh Herbal"}]},{id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[{t:dAgo(0),apa:"Brownies Kukus"},{t:dAgo(3),apa:"Putu Ayu"},{t:dAgo(7),apa:"Kue Kering"},{t:dAgo(11),apa:"Bolu Pandan"},{t:dAgo(19),apa:"Lapis Pelangi"},{t:dAgo(28),apa:"Brownies Kukus"}]},{id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[{t:dAgo(20),apa:"Lapis Pelangi"},{t:dAgo(34),apa:"Putu Ayu"},{t:dAgo(48),apa:"Bolu Pandan"}]},{id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[{t:dAgo(30),apa:"Shake Nutrisi"},{t:dAgo(40),apa:"Teh Herbal"}]},{id:6,nama:"Bu Lina",wa:"",kat:"Campur",visits:[{t:dAgo(1),apa:"Aloe Pendamping"},{t:dAgo(5),apa:"Bolu Pandan"},{t:dAgo(13),apa:"Shake Nutrisi"}]},{id:7,nama:"Mbak Rina",wa:"",kat:"Herbalife",visits:[{t:dAgo(6),apa:"Teh Herbal"},{t:dAgo(14),apa:"Shake Nutrisi"},{t:dAgo(21),apa:"Aloe Pendamping"}]},{id:8,nama:"Pak Joko",wa:"",kat:"Kue",visits:[{t:dAgo(4),apa:"Kue Kering"},{t:dAgo(10),apa:"Bolu Pandan"}]},{id:9,nama:"Bu Maya",wa:"",kat:"Campur",visits:[{t:dAgo(3),apa:"Putu Ayu"},{t:dAgo(8),apa:"Shake Nutrisi"},{t:dAgo(15),apa:"Brownies Kukus"},{t:dAgo(22),apa:"Teh Herbal"}]},{id:10,nama:"Mbak Tuti",wa:"",kat:"Kue",visits:[{t:dAgo(17),apa:"Lapis Pelangi"},{t:dAgo(29),apa:"Kue Kering"}]},{id:11,nama:"Bu Nia",wa:"",kat:"Herbalife",visits:[{t:dAgo(2),apa:"Shake Nutrisi"},{t:dAgo(9),apa:"Aloe Pendamping"},{t:dAgo(16),apa:"Teh Herbal"}]},{id:12,nama:"Pak Rahmat",wa:"",kat:"Campur",visits:[{t:dAgo(0),apa:"Bolu Pandan"},{t:dAgo(7),apa:"Teh Herbal"},{t:dAgo(20),apa:"Brownies Kukus"}]}];</script><script>
+</script><script>var AUTOLOGIN=false;function dAgo(n){var d=new Date(Date.now()-n*86400000);return d.toISOString().slice(0,10)}var DEMO=[{id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[[1,"Shake Nutrisi"],[4,"Teh Herbal"],[8,"Aloe Pendamping"],[12,"Shake Nutrisi"],[18,"Teh Herbal"],[25,"Shake Nutrisi"]]},{id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[[2,"Bolu Pandan"],[9,"Shake Nutrisi"],[16,"Brownies Kukus"],[23,"Teh Herbal"]]},{id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[[0,"Brownies Kukus"],[3,"Putu Ayu"],[7,"Kue Kering"],[11,"Bolu Pandan"],[19,"Lapis Pelangi"],[28,"Brownies Kukus"]]},{id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[[20,"Lapis Pelangi"],[34,"Putu Ayu"],[48,"Bolu Pandan"]]},{id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[[30,"Shake Nutrisi"],[40,"Teh Herbal"]]},{id:6,nama:"Bu Lina",wa:"",kat:"Campur",visits:[[1,"Aloe Pendamping"],[5,"Bolu Pandan"],[13,"Shake Nutrisi"]]},{id:7,nama:"Mbak Rina",wa:"",kat:"Herbalife",visits:[[6,"Teh Herbal"],[14,"Shake Nutrisi"],[21,"Aloe Pendamping"]]},{id:8,nama:"Pak Joko",wa:"",kat:"Kue",visits:[[4,"Kue Kering"],[10,"Bolu Pandan"]]},{id:9,nama:"Bu Maya",wa:"",kat:"Campur",visits:[[3,"Putu Ayu"],[8,"Shake Nutrisi"],[15,"Brownies Kukus"],[22,"Teh Herbal"]]},{id:10,nama:"Mbak Tuti",wa:"",kat:"Kue",visits:[[17,"Lapis Pelangi"],[29,"Kue Kering"]]},{id:11,nama:"Bu Nia",wa:"",kat:"Herbalife",visits:[[2,"Shake Nutrisi"],[9,"Aloe Pendamping"],[16,"Teh Herbal"]]},{id:12,nama:"Pak Rahmat",wa:"",kat:"Campur",visits:[[0,"Bolu Pandan"],[7,"Teh Herbal"],[20,"Brownies Kukus"]]}].map(c=>({...c,visits:c.visits.map(([n,apa],i)=>({id:c.id*100+i,t:dAgo(n),apa}))}));</script><script>
 const KEY = "dhaura_customers_v1";
 const AKEY = "dhaura_auth";
 const USER = "nur";   // contoh sementara
 const PASS = "1234";  // contoh sementara
+// Data demo awal APK/pratinjau. Bisa dihapus nanti dari halaman admin atau reset storage.
+function demoDate(daysAgo){ const d=new Date(Date.now()-daysAgo*86400000); return d.toISOString().slice(0,10); }
+const DEMO_CUSTOMERS = [
+  {id:1,nama:"Bu Ratna",wa:"",kat:"Herbalife",visits:[[1,"Shake Nutrisi"],[4,"Teh Herbal"],[8,"Aloe Pendamping"],[12,"Shake Nutrisi"],[18,"Teh Herbal"],[25,"Shake Nutrisi"]]},
+  {id:2,nama:"Pak Budi",wa:"",kat:"Campur",visits:[[2,"Bolu Pandan"],[9,"Shake Nutrisi"],[16,"Brownies Kukus"],[23,"Teh Herbal"]]},
+  {id:3,nama:"Pak Andi",wa:"",kat:"Kue",visits:[[0,"Brownies Kukus"],[3,"Putu Ayu"],[7,"Kue Kering"],[11,"Bolu Pandan"],[19,"Lapis Pelangi"],[28,"Brownies Kukus"]]},
+  {id:4,nama:"Mbak Sari",wa:"",kat:"Kue",visits:[[20,"Lapis Pelangi"],[34,"Putu Ayu"],[48,"Bolu Pandan"]]},
+  {id:5,nama:"Bu Dewi",wa:"",kat:"Herbalife",visits:[[30,"Shake Nutrisi"],[40,"Teh Herbal"]]},
+  {id:6,nama:"Bu Lina",wa:"",kat:"Campur",visits:[[1,"Aloe Pendamping"],[5,"Bolu Pandan"],[13,"Shake Nutrisi"]]},
+  {id:7,nama:"Mbak Rina",wa:"",kat:"Herbalife",visits:[[6,"Teh Herbal"],[14,"Shake Nutrisi"],[21,"Aloe Pendamping"]]},
+  {id:8,nama:"Pak Joko",wa:"",kat:"Kue",visits:[[4,"Kue Kering"],[10,"Bolu Pandan"]]},
+  {id:9,nama:"Bu Maya",wa:"",kat:"Campur",visits:[[3,"Putu Ayu"],[8,"Shake Nutrisi"],[15,"Brownies Kukus"],[22,"Teh Herbal"]]},
+  {id:10,nama:"Mbak Tuti",wa:"",kat:"Kue",visits:[[17,"Lapis Pelangi"],[29,"Kue Kering"]]},
+  {id:11,nama:"Bu Nia",wa:"",kat:"Herbalife",visits:[[2,"Shake Nutrisi"],[9,"Aloe Pendamping"],[16,"Teh Herbal"]]},
+  {id:12,nama:"Pak Rahmat",wa:"",kat:"Campur",visits:[[0,"Bolu Pandan"],[7,"Teh Herbal"],[20,"Brownies Kukus"]]}
+].map(c=>({...c,visits:c.visits.map(([days,apa],i)=>({id:c.id*100+i,t:demoDate(days),apa}))}));
 let mem = null;
 let logged = false;
 function load(){
   try { const v = JSON.parse(localStorage.getItem(KEY)); if(v) return v; } catch(e){}
-  return mem || [];
+  if(mem) return mem;
+  mem=DEMO_CUSTOMERS;
+  return mem;
 }
 function save(d){
   mem = d;
@@ -524,7 +543,10 @@ function showHistory(id){
   modal.querySelector(".history-box").addEventListener("touchmove", e => e.stopPropagation(), {passive:true});
 }
 function menuOptions(selected){
-  const items = [...KUE, ...HERBA].map(p => p.nama);
+  const items = (typeof KUE !== "undefined" ? [...KUE, ...HERBA].map(p => p.nama) : [
+    "Bolu Pandan","Brownies Kukus","Lapis Pelangi","Putu Ayu","Kue Kering",
+    "Shake Nutrisi","Teh Herbal","Aloe Pendamping"
+  ]);
   const known = items.includes(selected);
   return items.map(x => '<option value="' + esc(x) + '"' + (x === selected ? ' selected' : '') + '>' + esc(x) + '</option>').join("") +
     (selected && !known ? '<option value="' + esc(selected) + '" selected>' + esc(selected) + '</option>' : '');

@@ -1,5 +1,5 @@
 // Data final (struktur). Foto, nama, dan harga menyusul data asli.
-const WA_NUMBER = "6280000000000"; // GANTI nomor WA
+const WA_NUMBER = "6285245230101";
 
 const U = (id) => "https://images.unsplash.com/" + id + "?w=600&q=80";
 const IMG = {
