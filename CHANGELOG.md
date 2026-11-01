@@ -1,5 +1,9 @@
 # CHANGELOG d-haura
 
+## 2026-11-01 — Tayang di GitHub Pages
+- Repo GitHub rhezka/d-haura, Pages aktif dari branch master.
+- Alamat sementara tayang dan terverifikasi 200.
+
 ## 2026-11-01 — Login + tanggal pesanan + grafik
 - Admin pakai login contoh nur / 1234, tiap pencatatan ada kolom tanggalnya.
 - Dashboard ada grafik kunjungan 14 hari dan pelanggan per jenis.

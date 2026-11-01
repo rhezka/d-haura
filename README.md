@@ -1,5 +1,8 @@
 # D'Haura — web toko + halaman ibu
 
+Tayang sementara di GitHub Pages (sebelum domain d-haura.my.id diarahkan).
+Ganti foto, nama, harga, dan nomor WA dengan data asli bila sudah siap.
+
 Contoh awal. Foto dan harga masih contoh dari internet, wajib diganti foto dan harga asli sebelum tayang.
 
 Isi:
