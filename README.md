@@ -4,7 +4,7 @@ Contoh awal. Foto dan harga masih contoh dari internet, wajib diganti foto dan h
 
 Isi:
 - `index.html` — katalog umum (kue + Herbalife), tombol pesan WA, info QRIS dan pesanan acara.
-- `admin.html` — halaman internal ibu, pengganti kertas: daftar pelanggan, riwayat tanggal datang, dashboard sederhana, cadangan JSON. PIN contoh 1234.
+- `admin.html` — halaman internal, login contoh nur / 1234. Catat pelanggan berikut tanggal pesanannya, dashboard grafik + daftar perlu disapa, cadangan JSON.
 - `app.js`, `style.css` — data contoh dan tampilan.
 
 Yang harus diganti sebelum launching:
