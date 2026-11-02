@@ -24,3 +24,8 @@
   height: calc(env(safe-area-inset-top, 0px) + 84px) !important;
   min-height: calc(env(safe-area-inset-top, 0px) + 84px) !important;
 }
+/* Sembunyikan tombol Admin di bawah judul; di APK cukup lewat navigasi atas. */
+#viewK .top .actions a[href="admin.html"],
+.top .actions a[href="admin.html"] {
+  display: none !important;
+}
