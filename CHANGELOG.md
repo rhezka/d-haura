@@ -1,5 +1,18 @@
 # CHANGELOG d-haura
 
+## 2026-11-02 — APK 0.2.0: perbaikan rilis & navigasi
+- Tier: 1
+- Backup: commit `9f3af68` (sebelum bump versi).
+- Temuan: unggahan `--clobber` sebelumnya memakai nama aset berbeda (`app-debug.apk`),
+  sehingga `DHaura-debug.apk` tetap APK lama. Itu sebab pengguna tidak melihat perubahan.
+- Perubahan: hapus kedua aset lama, bump `versionCode 2` / `versionName 0.2.0`,
+  build ulang, unggah ulang sebagai `DHaura-debug.apk`.
+- Verifikasi: sha256 aset rilis `d6d3b21c…e07525` sama dengan hasil build; isi APK
+  memuat `inset: 0 0 auto 0` di `assets/public/style.css` dan `nativeNav` di
+  `index.html` + `admin.html`; workflow sukses pada commit `dc1f3fd`.
+- Data pengguna terpengaruh: TIDAK.
+- Rollback: `git revert dc1f3fd`, lalu build & unggah ulang.
+
 ## 2026-11-02 — APK-only navigation visibility fix
 - Tier: 1
 - Backup: `git` prior state at commit `5adea34`.
