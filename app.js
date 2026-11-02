@@ -44,14 +44,18 @@ const HERBA = [
     desc:"Minuman aloe untuk pendamping program harian." },
 ];
 
-// APK only: native bottom? top navigation stays visible while page content scrolls.
+// Navigasi Katalog/Admin: tetap di atas saat halaman digulir.
 function initNativeNavigation(){
-  const native = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === "function" && window.Capacitor.isNativePlatform());
   const nav=document.getElementById("nativeNav"), space=document.getElementById("nativeNavSpace");
-  if(!native||!nav||!space) return;
+  if(!nav||!space) return;
   nav.style.display="flex";
-  const size=()=>{space.style.height=nav.offsetHeight+"px"};
+  const size=()=>{space.style.height=(nav.offsetHeight+8)+"px"};
   size(); window.addEventListener("resize",size);
+  const here=(location.pathname.split("/").pop()||"index.html");
+  nav.querySelectorAll(".native-tab").forEach(a=>{
+    const target=a.getAttribute("href")||"";
+    a.classList.toggle("active", target===here || (here==="" && target==="index.html"));
+  });
 }
 
 function rupiah(n){ if(!n) return "Tanya via WA"; return "Rp " + n.toLocaleString("id-ID"); }

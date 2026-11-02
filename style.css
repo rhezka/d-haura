@@ -92,8 +92,10 @@ button.secondary { background:#6c757d; }
   background:linear-gradient(125deg,#e4f1df 0%,#f7fbf4 52%,#e7f2e4 100%);
   border-bottom:1px solid #cfe0ca;
   box-shadow:0 5px 18px rgba(44,77,49,.16); }
-.native-only { display:none; }
-.native-nav-space { height:0; }
+.native-only { display:flex; }
+.native-nav-space { height:calc(env(safe-area-inset-top, 0px) + 92px); }
+/* Tombol Admin cukup di tab atas, jangan dobel di bawah judul. */
+.top .actions a[href="admin.html"] { display:none; }
 .native-tab { display:flex; align-items:center; justify-content:center; flex:1;
   min-height:48px; padding:12px; border-radius:14px; text-decoration:none;
   font-weight:800; font-size:16px; color:#52755a;

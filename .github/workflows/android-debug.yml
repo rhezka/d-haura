@@ -9,7 +9,6 @@ on:
       - 'admin.html'
       - 'app.js'
       - 'style.css'
-      - 'apk-only.css'
       - 'img/**'
       - 'www/**'
       - 'android/**'
@@ -32,7 +31,7 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci
-      - run: mkdir -p www && cp index.html admin.html app.js style.css www/ && cp -r img www/ && cat apk-only.css >> www/style.css && npx cap sync android
+      - run: mkdir -p www && cp index.html admin.html app.js style.css www/ && cp -r img www/ && npx cap sync android
       - name: Build debug APK
         run: cd android && chmod +x gradlew && ./gradlew --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
