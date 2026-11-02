@@ -1,5 +1,17 @@
 # CHANGELOG d-haura
 
+## 2026-11-02 — APK 0.2.1: sembunyikan tombol Admin dobel
+- Tier: 1
+- Backup: commit `1c7e100`.
+- Perubahan: `apk-only.css` menambah aturan menyembunyikan `.top .actions a[href="admin.html"]`
+  (tombol Admin di bawah judul) khusus build APK; versi naik ke `versionCode 3` / `0.2.1`.
+- Verifikasi: build `41368744429` sukses pada `be1f393`; sha256 aset rilis
+  `1bfd352e…6c46af` sama dengan hasil build; di dalam APK hasil unduhan, aturan
+  penyembunyian ada di `assets/public/style.css` dan `nativeNav` ada di
+  `index.html` + `admin.html`.
+- Data pengguna terpengaruh: TIDAK.
+- Rollback: `git revert be1f393`, build & unggah ulang.
+
 ## 2026-11-02 — APK 0.2.0: perbaikan rilis & navigasi
 - Tier: 1
 - Backup: commit `9f3af68` (sebelum bump versi).
